@@ -2,10 +2,10 @@
 const nextConfig = {
   output: 'export',
   distDir: 'docs',
-  assetPrefix: '/docs',
+  assetPrefix: '/ip-address-converter',
   rewrites() {
     return [
-      { source: '/docs/_next/:path*', destination: '/_next/:path*' }
+      { source: '/ip-address-converter/_next/:path*', destination: '/_next/:path*' }
     ]
   }
 };
