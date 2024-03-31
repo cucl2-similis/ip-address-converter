@@ -26,10 +26,10 @@ export function Form({
         <h4>Form</h4>
         <div className="row g-3">
           <div className="col-md-3 col-lg-2">
-            <label className="col-form-label">IP Address / CIDR</label>
+            <label className="col-form-label" htmlFor="ip-address">IP Address / CIDR</label>
           </div>
           <div className="col-8 col-md-4 col-lg-3">
-            <input ref={inputElementRef} className="form-control" type="text" placeholder="0.0.0.0/0" required />
+            <input ref={inputElementRef} id="ip-address" className="form-control" type="text" placeholder="0.0.0.0/0" required />
           </div>
           <div className="col-auto">
             <button className="btn btn-primary"

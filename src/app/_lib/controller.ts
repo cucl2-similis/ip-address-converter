@@ -14,7 +14,7 @@ export class Controller {
      */
     public convert(inputElement: HTMLInputElement | null, setResultDto: Dispatch<SetStateAction<ResultDto | null>>): void {
 
-        if (inputElement == null) {
+        if (inputElement == null || inputElement.value === "") {
             return;
         }
 
