@@ -1,8 +1,9 @@
 "use client";
 
-import { Dispatch, MutableRefObject, SetStateAction, useRef } from "react";
-import { ResultDto } from "../_lib/result-dto";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Symbol } from "../_lib/const";
 import { Controller } from "../_lib/controller";
+import { ResultDto } from "../_lib/result-dto";
 
 /**
  * フォームコンポーネント  
@@ -17,11 +18,19 @@ export function Form({
   setResultDto: Dispatch<SetStateAction<ResultDto | null>>;
 }>): JSX.Element {
 
-  const controller = new Controller();
-  const inputElementRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
+  const formElementRef = useRef<HTMLFormElement>(null);
+  const inputElementRef = useRef<HTMLInputElement>(null);
+
+  const [wasValidated, setWasValidated] = useState(false);
+  const [invalidFeedback, setInvalidFeedback] = useState(Symbol.EMPTY);
+
+  const controller = new Controller(setWasValidated, setInvalidFeedback, setResultDto);
 
   return (
-    <form onSubmit={formEvent => formEvent.preventDefault()}>
+    <form ref={formElementRef}
+          className={"needs-validation" + (wasValidated && Symbol.SPACE + "was-validated")}
+          onSubmit={formEvent => formEvent.preventDefault()}
+          noValidate>
       <div className="my-3 p-3 border">
         <h4>Form</h4>
         <div className="row g-3">
@@ -29,12 +38,14 @@ export function Form({
             <label className="col-form-label" htmlFor="ip-address">IP Address / CIDR</label>
           </div>
           <div className="col-8 col-md-4 col-lg-3">
-            <input ref={inputElementRef} id="ip-address" className="form-control" type="text" placeholder="0.0.0.0/0" required />
+            <input ref={inputElementRef} id="ip-address" className="form-control" type="text" placeholder="0.0.0.0/0" />
+            <div className="valid-feedback">OK</div>
+            <div className="invalid-feedback">{invalidFeedback}</div>
           </div>
           <div className="col-auto">
             <button className="btn btn-primary"
                     type="submit"
-                    onClick={() => controller.convert(inputElementRef.current, setResultDto)}>
+                    onClick={() => controller.convert(formElementRef.current, inputElementRef.current)}>
               Convert
             </button>
           </div>

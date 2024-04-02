@@ -1,20 +1,56 @@
 import { Dispatch, SetStateAction } from "react";
-import { ResultDto } from "./result-dto";
+import { Assertions } from "./assertions";
 import { Regex } from "./const";
+import { ResultDto } from "./result-dto";
+import { Validator } from "./validator";
 
 /**
  * コントローラ
  */
 export class Controller {
 
+    /** バリデータ */
+    private readonly validator: Validator;
+
+    /** `was-validated`クラス設定要否boolean用 stateセッタ関数 */
+    private readonly setWasValidated: Dispatch<SetStateAction<boolean>>;
+    /** `invalid-feedback`クラス要素内容文字列用 stateセッタ関数 */
+    private readonly setInvalidFeedback: Dispatch<SetStateAction<string>>;
+    /** 変換結果DTO用 stateセッタ関数 */
+    private readonly setResultDto: Dispatch<SetStateAction<ResultDto | null>>;
+
     /**
-     * 入力IPアドレス変換
-     * @param inputElement `<input>`要素
+     * コントローラ
+     * @param setWasValidated `was-validated`クラス設定要否boolean用 stateセッタ関数
+     * @param setInvalidFeedback `invalid-feedback`クラス要素内容文字列用 stateセッタ関数
      * @param setResultDto 変換結果DTO用 stateセッタ関数
      */
-    public convert(inputElement: HTMLInputElement | null, setResultDto: Dispatch<SetStateAction<ResultDto | null>>): void {
+    public constructor(setWasValidated: Dispatch<SetStateAction<boolean>>,
+                       setInvalidFeedback: Dispatch<SetStateAction<string>>,
+                       setResultDto: Dispatch<SetStateAction<ResultDto | null>>) {
 
-        if (inputElement == null || inputElement.value === "") {
+        this.validator = new Validator();
+
+        this.setWasValidated = setWasValidated;
+        this.setInvalidFeedback = setInvalidFeedback;
+        this.setResultDto = setResultDto;
+    }
+
+    /**
+     * 入力IPアドレス変換
+     * @param formElement `<form>`要素
+     * @param inputElement `<input>`要素
+     */
+    public convert(formElement: HTMLFormElement | null, inputElement: HTMLInputElement | null): void {
+
+        Assertions.assertNotNull(formElement);
+        Assertions.assertNotNull(inputElement);
+
+        this.validator.validate(formElement, inputElement);
+
+        if (this.validator.hasErrors()) {
+            this.setWasValidated(true);
+            this.setInvalidFeedback(inputElement.validationMessage);
             return;
         }
 
@@ -27,6 +63,6 @@ export class Controller {
         resultDto.setDecIpAddressArray(decIpAddressArray);
         resultDto.setCidr(cidr);
 
-        setResultDto(resultDto);
+        this.setResultDto(resultDto);
     }
 }

@@ -4,6 +4,12 @@ export class Symbol {
 
     /** ピリオド（ `.` ） */
     public static readonly PERIOD = ".";
+
+    /** 半角スペース（ `" "` ） */
+    public static readonly SPACE = " ";
+
+    /** 空文字（ `""` ） */
+    public static readonly EMPTY = "";
 }
 
 /** 正規表現 */
