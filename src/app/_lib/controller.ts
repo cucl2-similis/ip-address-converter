@@ -21,15 +21,15 @@ export class Controller {
 
     /**
      * コントローラ
-     * @param setWasValidated `was-validated`クラス設定要否boolean用 stateセッタ関数
-     * @param setInvalidFeedback `invalid-feedback`クラス要素内容文字列用 stateセッタ関数
+     * @param validator バリデータ
+     * @param view ビュー（画面表示制御）
      * @param setResultDto 変換結果DTO用 stateセッタ関数
      */
-    public constructor(setWasValidated: Dispatch<SetStateAction<boolean>>,
-                       setInvalidFeedback: Dispatch<SetStateAction<string>>,
+    public constructor(validator: Validator,
+                       view: View,
                        setResultDto: Dispatch<SetStateAction<ResultDto | null>>) {
-        this.validator = new Validator();
-        this.view = new View(setWasValidated, setInvalidFeedback);
+        this.validator = validator;
+        this.view = view;
         this.setResultDto = setResultDto;
     }
 

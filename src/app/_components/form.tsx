@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Symbol } from "../_lib/const";
-import { Controller } from "../_lib/controller";
+import { Factory } from "../_lib/factory";
 import { ResultDto } from "../_lib/result-dto";
 
 /**
@@ -24,7 +24,7 @@ export function Form({
   const [wasValidated, setWasValidated] = useState(false);
   const [invalidFeedback, setInvalidFeedback] = useState(Symbol.EMPTY);
 
-  const controller = new Controller(setWasValidated, setInvalidFeedback, setResultDto);
+  const controller = Factory.createController(setWasValidated, setInvalidFeedback, setResultDto);
 
   return (
     <form ref={formElementRef}
