@@ -94,4 +94,203 @@ describe("Formコンポーネント", () => {
             expect(setResultDto).toHaveBeenCalledWith(resultDto);
         });
     });
+
+    describe("エラーメッセージ表示確認", () => {
+
+        test("初期表示にエラーメッセージが含まれないこと。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation"));
+            expect(formElement.className).toEqual(expect.not.stringContaining("needs-validation was-validated"));
+        });
+
+        test("入力値が正常の場合、エラーメッセージが表示されないこと。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            const inputElement = screen.getByLabelText<HTMLInputElement>("IP Address / CIDR");
+            inputElement.value = "192.168.10.1/24";
+
+            const buttonElement = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation"));
+            expect(formElement.className).toEqual(expect.not.stringContaining("needs-validation was-validated"));
+        });
+
+        test("入力値が空文字の場合、対応するエラーメッセージが表示されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            const inputElement = screen.getByLabelText<HTMLInputElement>("IP Address / CIDR");
+            inputElement.value = "";
+
+            const buttonElement = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+        });
+
+        test("エラーメッセージ表示後、入力値の変更により表示メッセージが更新されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            const inputElement = screen.getByLabelText<HTMLInputElement>("IP Address / CIDR");
+            inputElement.value = "";
+
+            const buttonElement = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+
+            inputElement.value = "192.168.10.1/24";
+            fireEvent.input(inputElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(true);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.not.stringContaining("This field is required."));
+
+            inputElement.value = "";
+            fireEvent.input(inputElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+        });
+
+        test("エラーメッセージ表示後、正常な入力値でのConvertボタン押下により、メッセージが非表示となること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            const inputElement = screen.getByLabelText<HTMLInputElement>("IP Address / CIDR");
+            inputElement.value = "";
+
+            const buttonElement = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+
+            inputElement.value = "192.168.10.1/24";
+            fireEvent.input(inputElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(true);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.not.stringContaining("This field is required."));
+
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation"));
+            expect(formElement.className).toEqual(expect.not.stringContaining("needs-validation was-validated"));
+            expect(formElement.textContent).toEqual(expect.not.stringContaining("This field is required."));
+        });
+
+        test("エラーメッセージ表示後、異常な入力値でのConvertボタン押下により、メッセージが再表示されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            const inputElement = screen.getByLabelText<HTMLInputElement>("IP Address / CIDR");
+            inputElement.value = "";
+
+            const buttonElement = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+
+            inputElement.value = "";
+            fireEvent.input(inputElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+        });
+
+        test("正常な入力値でのConvertボタン押下によるメッセージ非表示化後、メッセージが更新されなくなること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            const inputElement = screen.getByLabelText<HTMLInputElement>("IP Address / CIDR");
+            inputElement.value = "";
+
+            const buttonElement = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(false);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.stringContaining("This field is required."));
+
+            inputElement.value = "192.168.10.1/24";
+            fireEvent.input(inputElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation was-validated"));
+            expect(formElement.checkValidity()).toEqual(true);
+            expect(formElement.textContent).toEqual(expect.stringContaining("OK"));
+            expect(formElement.textContent).toEqual(expect.not.stringContaining("This field is required."));
+
+            fireEvent.click(buttonElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation"));
+            expect(formElement.className).toEqual(expect.not.stringContaining("needs-validation was-validated"));
+            expect(formElement.textContent).toEqual(expect.not.stringContaining("This field is required."));
+
+            inputElement.value = "";
+            fireEvent.input(inputElement);
+
+            expect(formElement.className).toEqual(expect.stringContaining("needs-validation"));
+            expect(formElement.className).toEqual(expect.not.stringContaining("needs-validation was-validated"));
+            expect(formElement.textContent).toEqual(expect.not.stringContaining("This field is required."));
+        });
+    });
 });
