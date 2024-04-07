@@ -1,11 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 import { Controller } from "./controller";
+import { Converter } from "./converter";
 import { ResultDto } from "./result-dto";
 import { Validator } from "./validator";
 import { View } from "./view";
 
 /**
- * ファクトリー
+ * ファクトリー（インスタンス生成）
  */
 export class Factory {
 
@@ -22,7 +23,8 @@ export class Factory {
                                    setInvalidFeedback: Dispatch<SetStateAction<string>>,
                                    setResultDto: Dispatch<SetStateAction<ResultDto | null>>): Controller {
 
-        return new Controller(new Validator(),
+        return new Controller(new Converter(),
+                              new Validator(),
                               new View(setWasValidated, setInvalidFeedback),
                               setResultDto);
     }
