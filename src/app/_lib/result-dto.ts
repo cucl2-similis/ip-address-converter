@@ -87,6 +87,14 @@ export class ResultDto {
     }
 
     /**
+     * 2進数IPアドレス取得
+     * @returns 2進数IPアドレス
+     */
+    public getBinIpAddress(): string {
+        return this.binIpAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
      * CIDR取得
      * @returns CIDR
      */

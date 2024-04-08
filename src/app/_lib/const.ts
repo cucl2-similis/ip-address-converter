@@ -54,3 +54,12 @@ export class IpAddress {
     /** 第四オクテットの要素番号: 3 */
     public static readonly FOURTH_OCTET_INDEX = 3;
 }
+
+/** ラジオボタン選択肢 */
+export const Radio = {
+    /** 項目「10進数」 */
+    DEC: "Decimal",
+    /** 項目「2進数」 */
+    BIN: "Binary"
+} as const;
+export type Radio = typeof Radio[keyof typeof Radio];
