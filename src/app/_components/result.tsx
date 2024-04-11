@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Radio, Symbol } from "../_lib/const";
+import { Radio } from "../_lib/const";
 import { ResultDto } from "../_lib/result-dto";
+import { BinInfo } from "./bin-info";
+import { DecInfo } from "./dec-info";
 import { RadioButton } from "./radio-button";
+import { Subheading } from "./subheading";
 
 /**
  * 変換結果コンポーネント  
@@ -30,13 +33,17 @@ export function Result({
           </div>
         </div>
         <div className="row">
-          <div className="col-md-3 col-lg-2 fw-bold text-md-end">IP</div>
-          <div className={"col-md-3 col-lg-2 font-monospace" + (radio === Radio.DEC ? Symbol.EMPTY : Symbol.SPACE + "d-none d-md-block")}>
-            {resultDto == null ? "---.---.---.---" : resultDto.getDecIpAddress()}
-          </div>
-          <div className={"col-md-6 col-lg-8 font-monospace" + (radio === Radio.BIN ? Symbol.EMPTY : Symbol.SPACE + "d-none d-md-block")}>
-            {resultDto == null ? "--------.--------.--------.--------" : resultDto.getBinIpAddress()}
-          </div>
+          <Subheading>IP</Subheading>
+          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecIpAddress()} />
+          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinIpAddress()} />
+        </div>
+      </div>
+      <div className="row">
+        <h5 className="mt-3">Subnet info</h5>
+        <div className="row mt-1 mt-md-0">
+          <Subheading>Subnet mask</Subheading>
+          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecSubnetMask()} />
+          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinSubnetMask()} />
         </div>
       </div>
     </div>

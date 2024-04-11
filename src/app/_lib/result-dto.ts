@@ -87,11 +87,27 @@ export class ResultDto {
     }
 
     /**
+     * 10進数サブネットマスク取得
+     * @returns 10進数サブネットマスク
+     */
+    public getDecSubnetMask(): string {
+        return this.decSubnetMaskArray.join(Symbol.PERIOD);
+    }
+
+    /**
      * 2進数IPアドレス取得
      * @returns 2進数IPアドレス
      */
     public getBinIpAddress(): string {
         return this.binIpAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
+     * 2進数サブネットマスク取得
+     * @returns 2進数サブネットマスク
+     */
+    public getBinSubnetMask(): string {
+        return this.binSubnetMaskArray.join(Symbol.PERIOD);
     }
 
     /**
