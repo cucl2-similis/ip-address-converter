@@ -1,4 +1,4 @@
-import { Symbol } from "./const";
+import { IpAddress, Symbol } from "./const";
 
 /**
  * 変換結果DTO
@@ -95,6 +95,38 @@ export class ResultDto {
     }
 
     /**
+     * 10進数ネットワークアドレス取得
+     * @returns 10進数ネットワークアドレス
+     */
+    public getDecNetworkAddress(): string {
+        return this.decNetworkAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
+     * 10進数ブロードキャストアドレス取得
+     * @returns 10進数ブロードキャストアドレス
+     */
+    public getDecBroadcastAddress(): string {
+        return this.decBroadcastAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
+     * 10進数利用可能範囲開始IPアドレス取得
+     * @returns 10進数利用可能範囲開始IPアドレス
+     */
+    public getDecFirstAvailableIpAddress(): string {
+        return this.decFirstAvailableIpAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
+     * 10進数利用可能範囲終了IPアドレス取得
+     * @returns 10進数利用可能範囲終了IPアドレス
+     */
+    public getDecLastAvailableIpAddress(): string {
+        return this.decLastAvailableIpAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
      * 2進数IPアドレス取得
      * @returns 2進数IPアドレス
      */
@@ -111,10 +143,56 @@ export class ResultDto {
     }
 
     /**
+     * 2進数ネットワークアドレス取得
+     * @returns 2進数ネットワークアドレス
+     */
+    public getBinNetworkAddress(): string {
+        return this.binNetworkAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
+     * 2進数ブロードキャストアドレス取得
+     * @returns 2進数ブロードキャストアドレス
+     */
+    public getBinBroadcastAddress(): string {
+        return this.binBroadcastAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
+     * 2進数利用可能範囲開始IPアドレス取得
+     * @returns 2進数利用可能範囲開始IPアドレス
+     */
+    public getBinFirstAvailableIpAddress(): string {
+        return this.binFirstAvailableIpAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
+     * 2進数利用可能範囲終了IPアドレス取得
+     * @returns 2進数利用可能範囲終了IPアドレス
+     */
+    public getBinLastAvailableIpAddress(): string {
+        return this.binLastAvailableIpAddressArray.join(Symbol.PERIOD);
+    }
+
+    /**
      * CIDR取得
      * @returns CIDR
      */
     public getCidr(): number {
         return this.cidr;
+    }
+
+    /**
+     * 利用可能IPアドレス数取得  
+     * 数値を表す言語依存の文字列（例: `,`区切り）を取得する。
+     * @returns 利用可能IPアドレス数
+     */
+    public getNumberOfAvailableIps(): string {
+
+        const numberOfAvailableIps = IpAddress.RADIX_BINARY              // 基数2
+                                     ** (IpAddress.IP_DIGIT - this.cidr) // ホスト部の桁数 乗
+                                     - 2;                                // - ネットワークアドレス, ブロードキャストアドレス
+
+        return numberOfAvailableIps.toLocaleString(); // 数値を表す言語依存の文字列（例:「,」区切り）
     }
 }

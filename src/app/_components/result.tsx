@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Radio } from "../_lib/const";
+import { Radio, Symbol } from "../_lib/const";
 import { ResultDto } from "../_lib/result-dto";
 import { BinInfo } from "./bin-info";
 import { DecInfo } from "./dec-info";
@@ -40,10 +40,41 @@ export function Result({
       </div>
       <div className="row">
         <h5 className="mt-3">Subnet info</h5>
+        <div className="row mb-1 mb-md-2">
+          <Subheading>CIDR</Subheading>
+          <div className="col-md-9 col-lg-6">
+            <span className="font-monospace">/{resultDto == null ? "--" : resultDto.getCidr()}</span>
+            <span className="text-secondary"> ( <span className="font-monospace">{resultDto == null ? "--" : resultDto.getNumberOfAvailableIps()}</span> IPs )</span>
+          </div>
+        </div>
         <div className="row mt-1 mt-md-0">
           <Subheading>Subnet mask</Subheading>
           <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecSubnetMask()} />
           <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinSubnetMask()} />
+        </div>
+        <div className="row mt-1 mt-md-0">
+          <Subheading>Network address</Subheading>
+          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecNetworkAddress()} />
+          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinNetworkAddress()} />
+        </div>
+        <div className="row mt-1 mt-md-0">
+          <Subheading>Broadcast address</Subheading>
+          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecBroadcastAddress()} />
+          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinBroadcastAddress()} />
+        </div>
+        <div className="row mt-1 mt-md-2">
+          <Subheading>Available range</Subheading>
+          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecFirstAvailableIpAddress()} />
+          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinFirstAvailableIpAddress()} />
+        </div>
+        <div className="row">
+          <div className={"lh-1 fst-italic d-md-none"}>to</div>
+          <div className={"lh-1 fst-italic d-none d-md-block col-md-3 offset-md-3 col-lg-2 offset-lg-2"}>to</div>
+          <div className={"lh-1 fst-italic d-none d-md-block col-md-6 col-lg-4"}>to</div>
+        </div>
+        <div className="row">
+          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecLastAvailableIpAddress()} optionalClass="offset-md-3 offset-lg-2" />
+          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinLastAvailableIpAddress()} />
         </div>
       </div>
     </div>
