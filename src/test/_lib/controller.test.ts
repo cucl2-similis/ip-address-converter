@@ -1,5 +1,6 @@
+import { Builder } from "@/app/_lib/builder";
 import { Controller } from "@/app/_lib/controller";
-import { ResultDto } from "@/app/_lib/result-dto";
+import { Converter } from "@/app/_lib/converter";
 import { Validator } from "@/app/_lib/validator";
 import { View } from "@/app/_lib/view";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
@@ -12,6 +13,7 @@ describe("Controller", () => {
     let setInvalidFeedback: Mock<UnknownFunction>;
     let setResultDto: Mock<UnknownFunction>;
 
+    let converter: Converter
     let validator: Validator;
     let view: View;
 
@@ -22,10 +24,11 @@ describe("Controller", () => {
         setInvalidFeedback = jest.fn();
         setResultDto = jest.fn();
 
+        converter = new Converter();
         validator = new Validator();
         view = new View(setWasValidated, setInvalidFeedback);
 
-        controller = new Controller(validator, view, setResultDto);
+        controller = new Controller(converter, validator, view, setResultDto);
     });
 
     describe("convert", () => {
@@ -147,20 +150,37 @@ describe("Controller", () => {
 
         test("<input>要素の値に対応した変換結果DTOが、stateセッタ関数によって設定されること。", () => {
 
+            const inputValue = "192.168.10.1/24";
+
             jest.spyOn(validator, "validate").mockImplementation(() => {});
             jest.spyOn(validator, "hasErrors").mockReturnValue(false);
 
+            const convert = jest.spyOn(converter, "convert").mockImplementation(decIpAddressWithCidr => {
+                return decIpAddressWithCidr !== inputValue
+                        ? Builder.ofResultDto()
+                                 .build()
+                        : Builder.ofResultDto()
+                                 .decIpAddressArray([192, 168, 10, 1])
+                                 .binIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                                 .cidr(24)
+                                 .build();
+            });
+
             const formElement = document.createElement("form");
             const inputElement = document.createElement("input");
-            inputElement.value = "192.168.10.1/24";
 
+            inputElement.value = inputValue;
             controller.convert(formElement, inputElement);
 
+            expect(convert).toHaveBeenCalledTimes(1);
             expect(setResultDto).toHaveBeenCalledTimes(1);
 
-            const resultDto = new ResultDto();
-            resultDto.setDecIpAddressArray([192, 168, 10, 1]);
-            resultDto.setCidr(24)
+            const resultDto = Builder.ofResultDto()
+                    .decIpAddressArray([192, 168, 10, 1])
+                    .binIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                    .cidr(24)
+                    .build();
+
             expect(setResultDto).toHaveBeenCalledWith(resultDto);
         });
     });

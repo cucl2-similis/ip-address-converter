@@ -1,5 +1,5 @@
 import { Form } from "@/app/_components/form";
-import { ResultDto } from "@/app/_lib/result-dto";
+import { Builder } from "@/app/_lib/builder";
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { Root, createRoot } from "react-dom/client";
@@ -88,9 +88,22 @@ describe("Formコンポーネント", () => {
 
             expect(setResultDto).toHaveBeenCalledTimes(1);
 
-            const resultDto = new ResultDto();
-            resultDto.setDecIpAddressArray([192, 168, 10, 1]);
-            resultDto.setCidr(24)
+            const resultDto = Builder.ofResultDto()
+                    .decIpAddressArray([192, 168, 10, 1])
+                    .decSubnetMaskArray([255, 255, 255, 0])
+                    .decNetworkAddressArray([192, 168, 10, 0])
+                    .decBroadcastAddressArray([192, 168, 10, 255])
+                    .decFirstAvailableIpAddressArray([192, 168, 10, 1])
+                    .decLastAvailableIpAddressArray([192, 168, 10, 254])
+                    .binIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                    .binSubnetMaskArray(["11111111", "11111111", "11111111", "00000000"])
+                    .binNetworkAddressArray(["11000000", "10101000", "00001010", "00000000"])
+                    .binBroadcastAddressArray(["11000000", "10101000", "00001010", "11111111"])
+                    .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                    .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "11111110"])
+                    .cidr(24)
+                    .build();
+
             expect(setResultDto).toHaveBeenCalledWith(resultDto);
         });
     });
