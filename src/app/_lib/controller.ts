@@ -1,16 +1,19 @@
 import { Dispatch, SetStateAction } from "react";
 import { Assertions } from "./assertions";
-import { Regex } from "./const";
+import { Converter } from "./converter";
 import { ResultDto } from "./result-dto";
 import { Validator } from "./validator";
 import { View } from "./view";
 
 /**
- * コントローラ
+ * コントローラ（ボタンイベント管理）
  */
 export class Controller {
 
-    /** バリデータ */
+    /** コンバータ（変換ロジック） */
+    private readonly converter: Converter;
+
+    /** バリデータ（入力チェック） */
     private readonly validator: Validator;
 
     /** ビュー（画面表示制御） */
@@ -20,14 +23,17 @@ export class Controller {
     private readonly setResultDto: Dispatch<SetStateAction<ResultDto | null>>;
 
     /**
-     * コントローラ
-     * @param validator バリデータ
+     * コントローラ（ボタンイベント管理）
+     * @param converter コンバータ（変換ロジック）
+     * @param validator バリデータ（入力チェック）
      * @param view ビュー（画面表示制御）
      * @param setResultDto 変換結果DTO用 stateセッタ関数
      */
-    public constructor(validator: Validator,
+    public constructor(converter: Converter,
+                       validator: Validator,
                        view: View,
                        setResultDto: Dispatch<SetStateAction<ResultDto | null>>) {
+        this.converter = converter;
         this.validator = validator;
         this.view = view;
         this.setResultDto = setResultDto;
@@ -43,6 +49,7 @@ export class Controller {
         Assertions.assertNotNull(formElement);
         Assertions.assertNotNull(inputElement);
 
+        // 入力チェック
         this.validator.validate(formElement, inputElement);
 
         // 入力チェックエラーありの場合
@@ -63,15 +70,8 @@ export class Controller {
         inputElement.oninput = () => {}; // 入力値の変更イベント発生時の関数を削除
         this.view.updateErrorMessage();  // エラーメッセージを非表示に更新
 
-        const decIpAddressArray = inputElement.value              // IP:     1.2.3.4/5
-                                    .split(Regex.PERIOD_OR_SLASH) // array = 1,2,3,4,5 ──┐
-                                    .map(Number);                 // array = 1,2,3,4  <──┤ pop
-        const cidr = Number(decIpAddressArray.pop());             // cidr  = 5        <──┘
-
-        const resultDto = new ResultDto();
-        resultDto.setDecIpAddressArray(decIpAddressArray);
-        resultDto.setCidr(cidr);
-
-        this.setResultDto(resultDto);
+        // 変換
+        const resultDto = this.converter.convert(inputElement.value); // 変換処理実行
+        this.setResultDto(resultDto);                                 // 変換結果設定
     }
 }

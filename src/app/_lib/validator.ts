@@ -1,7 +1,7 @@
 import { Symbol } from "./const";
 
 /**
- * バリデータ
+ * バリデータ（入力チェック）
  */
 export class Validator {
 

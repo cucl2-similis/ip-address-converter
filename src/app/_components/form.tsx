@@ -28,7 +28,7 @@ export function Form({
 
   return (
     <form ref={formElementRef}
-          className={"needs-validation" + (wasValidated && Symbol.SPACE + "was-validated")}
+          className={"needs-validation" + (wasValidated ? Symbol.SPACE + "was-validated" : Symbol.EMPTY)}
           onSubmit={formEvent => formEvent.preventDefault()}
           noValidate>
       <div className="my-3 p-3 border">
