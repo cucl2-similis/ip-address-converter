@@ -1,4 +1,4 @@
-import { IpAddress, Symbol } from "./const";
+import { AddressClass, IpAddress, Symbol } from "./const";
 
 /**
  * 変換結果DTO
@@ -180,6 +180,17 @@ export class ResultDto {
      */
     public getCidr(): number {
         return this.cidr;
+    }
+
+    /**
+     * アドレスクラス取得
+     * @returns アドレスクラス
+     */
+    public getAddressClass(): AddressClass {
+        if (this.getBinIpAddress().startsWith("0"))   return AddressClass.A;
+        if (this.getBinIpAddress().startsWith("10"))  return AddressClass.B;
+        if (this.getBinIpAddress().startsWith("110")) return AddressClass.C;
+        return AddressClass.UNDEFINED;
     }
 
     /**

@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { Symbol } from "./const";
+import { ResultDto } from "./result-dto";
 
 /**
  * ビュー（画面表示制御）
@@ -10,16 +11,21 @@ export class View {
     private readonly setWasValidated: Dispatch<SetStateAction<boolean>>;
     /** `invalid-feedback`クラス要素内容文字列用 stateセッタ関数 */
     private readonly setInvalidFeedback: Dispatch<SetStateAction<string>>;
+    /** 変換結果DTO用 stateセッタ関数 */
+    private readonly setResultDto: Dispatch<SetStateAction<ResultDto | null>>;
 
     /**
      * ビュー（画面表示制御）
      * @param setWasValidated `was-validated`クラス設定要否boolean用 stateセッタ関数
      * @param setInvalidFeedback `invalid-feedback`クラス要素内容文字列用 stateセッタ関数
+     * @param setResultDto 変換結果DTO用 stateセッタ関数
      */
     public constructor(setWasValidated: Dispatch<SetStateAction<boolean>>,
-                       setInvalidFeedback: Dispatch<SetStateAction<string>>) {
+                       setInvalidFeedback: Dispatch<SetStateAction<string>>,
+                       setResultDto: Dispatch<SetStateAction<ResultDto | null>>) {
         this.setWasValidated = setWasValidated;
         this.setInvalidFeedback = setInvalidFeedback;
+        this.setResultDto = setResultDto;
     }
 
     /**
@@ -40,5 +46,13 @@ export class View {
         }
         this.setWasValidated(true);
         this.setInvalidFeedback(errorMessage);
+    }
+
+    /**
+     * 変換結果表示の更新
+     * @param resultDto 変換結果DTO
+     */
+    public updateResult(resultDto: ResultDto): void {
+        this.setResultDto(resultDto);
     }
 }

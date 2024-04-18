@@ -37,12 +37,13 @@ export function Result({
           <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecIpAddress()} />
           <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinIpAddress()} />
         </div>
-      </div>
-      <div className="row">
-        <h5 className="mt-3">Subnet info</h5>
-        <div className="row mb-1 mb-md-2">
+        <div className="row mt-1 mt-md-2">
+          <Subheading>Class</Subheading>
+          <div className="col-md-9 col-lg-10">{resultDto == null ? "-" : resultDto.getAddressClass()}</div>
+        </div>
+        <div className="row mt-1 mt-md-0 mb-md-2">
           <Subheading>CIDR</Subheading>
-          <div className="col-md-9 col-lg-6">
+          <div className="col-md-9 col-lg-10">
             <span className="font-monospace">/{resultDto == null ? "--" : resultDto.getCidr()}</span>
             <span className="text-secondary"> ( <span className="font-monospace">{resultDto == null ? "--" : resultDto.getNumberOfAvailableIps()}</span> IPs )</span>
           </div>

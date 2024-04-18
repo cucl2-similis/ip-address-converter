@@ -63,3 +63,16 @@ export const Radio = {
     BIN: "Binary"
 } as const;
 export type Radio = typeof Radio[keyof typeof Radio];
+
+/** アドレスクラス */
+export const AddressClass = {
+    /** クラスA */
+    A: "A",
+    /** クラスB */
+    B: "B",
+    /** クラスC */
+    C: "C",
+    /** 未定義 */
+    UNDEFINED: undefined
+} as const;
+export type AddressClass = typeof AddressClass[keyof typeof AddressClass];

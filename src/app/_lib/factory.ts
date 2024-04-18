@@ -25,7 +25,8 @@ export class Factory {
 
         return new Controller(new Converter(),
                               new Validator(),
-                              new View(setWasValidated, setInvalidFeedback),
-                              setResultDto);
+                              new View(setWasValidated,
+                                       setInvalidFeedback,
+                                       setResultDto));
     }
 }
