@@ -200,9 +200,9 @@ export class ResultDto {
      */
     public getNumberOfAvailableIps(): string {
 
-        const numberOfAvailableIps = IpAddress.RADIX_BINARY              // 基数2
-                                     ** (IpAddress.IP_DIGIT - this.cidr) // ホスト部の桁数 乗
-                                     - 2;                                // - ネットワークアドレス, ブロードキャストアドレス
+        const numberOfAvailableIps = IpAddress.RADIX_BINARY                 // 基数2
+                                     ** (IpAddress.IPv4_DIGITS - this.cidr) // ホスト部の桁数 乗
+                                     - 2;                                   // - ネットワークアドレス, ブロードキャストアドレス
 
         return numberOfAvailableIps.toLocaleString(); // 数値を表す言語依存の文字列（例:「,」区切り）
     }

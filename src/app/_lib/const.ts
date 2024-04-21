@@ -46,10 +46,10 @@ export class IpAddress {
     public static readonly RADIX_BINARY = 2;
 
     /** オクテット1ブロックの桁数: 8 */
-    public static readonly OCTET_DIGIT = 8;
+    public static readonly OCTET_DIGITS = 8;
 
     /** IPアドレスの桁数: 32 */
-    public static readonly IP_DIGIT = 32;
+    public static readonly IPv4_DIGITS = 32;
 
     /** 第四オクテットの要素番号: 3 */
     public static readonly FOURTH_OCTET_INDEX = 3;
@@ -67,12 +67,12 @@ export type Radio = typeof Radio[keyof typeof Radio];
 /** アドレスクラス */
 export const AddressClass = {
     /** クラスA */
-    A: "A",
+    A: {index: 1, name: "A"},
     /** クラスB */
-    B: "B",
+    B: {index: 2, name: "B"},
     /** クラスC */
-    C: "C",
+    C: {index: 3, name: "C"},
     /** 未定義 */
-    UNDEFINED: undefined
+    UNDEFINED: {index: 0, name: undefined}
 } as const;
 export type AddressClass = typeof AddressClass[keyof typeof AddressClass];

@@ -12,8 +12,8 @@ export class ConversionUtils {
      * @returns 2進数`string`
      */
     public static convertDecimalToBinary(decimal: number): string {
-        const binary = decimal.toString(IpAddress.RADIX_BINARY);               // 基数2で文字列変換
-        return binary.padStart(IpAddress.OCTET_DIGIT, IpAddress.BIT_STR_ZERO); // 8桁0埋め
+        const binary = decimal.toString(IpAddress.RADIX_BINARY);                // 基数2で文字列変換
+        return binary.padStart(IpAddress.OCTET_DIGITS, IpAddress.BIT_STR_ZERO); // 8桁0埋め
     }
 
     /**
@@ -60,13 +60,13 @@ export class IpAddressUtils {
      */
     public static createBinSubnetMaskArray(cidr: number): string[] {
 
-        const quotient = Math.floor(cidr / IpAddress.OCTET_DIGIT);                // 商（小数点以下切り捨て）
-        const remainder = cidr % IpAddress.OCTET_DIGIT;                           // 余り
-        const networkSectionDigit = IpAddress.OCTET_DIGIT * quotient + remainder; // ネットワーク部の桁数
-        const hostSectionDigit = IpAddress.IP_DIGIT - networkSectionDigit;        // ホスト部の桁数
-        const subnetMask = (IpAddress.BIT_STR_ONE.repeat(networkSectionDigit))    // ネットワーク部は「1」
-                         + (IpAddress.BIT_STR_ZERO.repeat(hostSectionDigit));     // ホスト部は「0」
-        return this.convertBinIpAddressToOctetArray(subnetMask);                  // オクテットごとの配列に変換して返却
+        const quotient = Math.floor(cidr / IpAddress.OCTET_DIGITS);                // 商（小数点以下切り捨て）
+        const remainder = cidr % IpAddress.OCTET_DIGITS;                           // 余り
+        const networkSectionDigit = IpAddress.OCTET_DIGITS * quotient + remainder; // ネットワーク部の桁数
+        const hostSectionDigit = IpAddress.IPv4_DIGITS - networkSectionDigit;      // ホスト部の桁数
+        const subnetMask = (IpAddress.BIT_STR_ONE.repeat(networkSectionDigit))     // ネットワーク部は「1」
+                         + (IpAddress.BIT_STR_ZERO.repeat(hostSectionDigit));      // ホスト部は「0」
+        return this.convertBinIpAddressToOctetArray(subnetMask);                   // オクテットごとの配列に変換して返却
     }
 
     /**
@@ -80,13 +80,13 @@ export class IpAddressUtils {
     public static createBinArraysOfNetworkAndBroadcast(binIpAddressArray: string[],
                                                        cidr: number): Readonly<{ binNetworkAddressArray: string[];
                                                                                  binBroadcastAddressArray: string[]; }> {
-                                                                                          // 例）192.168.10.1/20 の場合
-        const ipAddress = binIpAddressArray.join(Symbol.EMPTY);                           // 11000000101010000000101000000001 (IPアドレス)
-        const networkSection = ipAddress.substring(0, cidr);                              // 11000000101010000000             (ネットワーク部)
-        const hostSectionZero = IpAddress.BIT_STR_ZERO.repeat(IpAddress.IP_DIGIT - cidr); //                     000000000000 (ホスト部 - 0)
-        const hostSectionOne = IpAddress.BIT_STR_ONE.repeat(IpAddress.IP_DIGIT - cidr);   //                     111111111111 (ホスト部 - 1)
-        const networkAddress = networkSection + hostSectionZero;                          // 11000000101010000000000000000000 (ネットワークアドレス)
-        const broadcastAddress = networkSection + hostSectionOne;                         // 11000000101010000000111111111111 (ブロードキャストアドレス)
+                                                                                             // 例）192.168.10.1/20 の場合
+        const ipAddress = binIpAddressArray.join(Symbol.EMPTY);                              // 11000000101010000000101000000001 (IPアドレス)
+        const networkSection = ipAddress.substring(0, cidr);                                 // 11000000101010000000             (ネットワーク部)
+        const hostSectionZero = IpAddress.BIT_STR_ZERO.repeat(IpAddress.IPv4_DIGITS - cidr); //                     000000000000 (ホスト部 - 0)
+        const hostSectionOne = IpAddress.BIT_STR_ONE.repeat(IpAddress.IPv4_DIGITS - cidr);   //                     111111111111 (ホスト部 - 1)
+        const networkAddress = networkSection + hostSectionZero;                             // 11000000101010000000000000000000 (ネットワークアドレス)
+        const broadcastAddress = networkSection + hostSectionOne;                            // 11000000101010000000111111111111 (ブロードキャストアドレス)
 
         const binNetworkAddressArray = this.convertBinIpAddressToOctetArray(networkAddress);     // オクテットごとの配列に変換
         const binBroadcastAddressArray = this.convertBinIpAddressToOctetArray(broadcastAddress); // オクテットごとの配列に変換
