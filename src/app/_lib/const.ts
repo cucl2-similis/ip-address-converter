@@ -18,6 +18,9 @@ export class Regex {
     /** ピリオド（ `.` ） */
     public static readonly PERIOD: RegExp = /\./;
 
+    /** スラッシュ（ `/` ） */
+    public static readonly SLASH: RegExp = /\//;
+
     /** ピリオドまたはスラッシュ（ `.` or `/` ） */
     public static readonly PERIOD_OR_SLASH: RegExp = /\.|\//;
 
@@ -31,6 +34,25 @@ export class Regex {
      *             {@link https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/RegExp/global global}）
      */
     public static readonly CHUNK_OF_8_CHAR: RegExp = /.{8}/g;
+
+    /**
+     * CIDRブロック付IPアドレス形式
+     * - 形式「数値1～3桁`.`数値1～3桁`.`数値1～3桁`.`数値1～3桁`/`数値1～2桁」に一致（{@link https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Regular_expressions 正規表現}）
+     *   - `^`, `$`：入力の先頭と入力の末尾に一致（{@link https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Regular_expressions/Assertions アサーション}）
+     *   - `{n,m}`：n回以上m回以下の出現に一致（{@link https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Regular_expressions/Quantifiers 数量詞}）
+     *   - `[0-9]`：あらゆるアラビア数字に一致（{@link https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Regular_expressions/Character_classes 文字クラス}）
+     */
+    public static readonly FORMAT_OF_IP_WITH_CIDR: RegExp = new RegExp("^"           // 入力の先頭に一致
+                                                               .concat("[0-9]{1,3}") // 数値1～3桁
+                                                               .concat(".")          //「.」
+                                                               .concat("[0-9]{1,3}") // 数値1～3桁
+                                                               .concat(".")          //「.」
+                                                               .concat("[0-9]{1,3}") // 数値1～3桁
+                                                               .concat(".")          //「.」
+                                                               .concat("[0-9]{1,3}") // 数値1～3桁
+                                                               .concat("/")          //「/」
+                                                               .concat("[0-9]{1,2}") // 数値1～2桁
+                                                               .concat("$"));        // 入力の末尾に一致
 }
 
 /** IPアドレス関連定数 */
@@ -73,6 +95,6 @@ export const AddressClass = {
     /** クラスC */
     C: {index: 3, name: "C"},
     /** 未定義 */
-    UNDEFINED: {index: 0, name: undefined}
+    UNDEFINED: {index: 0, name: "-"}
 } as const;
 export type AddressClass = typeof AddressClass[keyof typeof AddressClass];
