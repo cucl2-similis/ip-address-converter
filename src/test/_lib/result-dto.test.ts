@@ -1,4 +1,5 @@
 import { Builder } from "@/app/_lib/builder";
+import { AddressClass } from "@/app/_lib/const";
 import { ResultDto } from "@/app/_lib/result-dto";
 import { describe, expect, test } from "@jest/globals";
 
@@ -138,6 +139,45 @@ describe("ResultDto", () => {
 
             const expected = 24;
             const actual = resultDto.getCidr();
+            expect(actual).toEqual(expected);
+        });
+
+        test("アドレスクラス（クラスA）を取得できること。", () => {
+
+            const expected = AddressClass.A;
+            const actual = Builder.ofResultDto()
+                                  .binIpAddressArray(["00001010", "00000000", "00000000", "00000001"])
+                                  .build()
+                                  .getAddressClass();
+            expect(actual).toEqual(expected);
+        });
+
+        test("アドレスクラス（クラスB）を取得できること。", () => {
+
+            const expected = AddressClass.B;
+            const actual = Builder.ofResultDto()
+                                  .binIpAddressArray(["10101100", "00010000", "00000000", "00000001"])
+                                  .build()
+                                  .getAddressClass();
+            expect(actual).toEqual(expected);
+        });
+
+        test("アドレスクラス（クラスC）を取得できること。", () => {
+
+            const expected = AddressClass.C;
+            const actual = Builder.ofResultDto()
+                                  .binIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                                  .build()
+                                  .getAddressClass();
+            expect(actual).toEqual(expected);
+        });
+
+        test("アドレスクラス（未定義）を取得できること。", () => {
+
+            const expected = AddressClass.UNDEFINED;
+            const actual = Builder.ofResultDto()
+                                  .build()
+                                  .getAddressClass();
             expect(actual).toEqual(expected);
         });
 

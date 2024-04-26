@@ -26,9 +26,9 @@ describe("Controller", () => {
 
         converter = new Converter();
         validator = new Validator();
-        view = new View(setWasValidated, setInvalidFeedback);
+        view = new View(setWasValidated, setInvalidFeedback, setResultDto);
 
-        controller = new Controller(converter, validator, view, setResultDto);
+        controller = new Controller(converter, validator, view);
     });
 
     describe("convert", () => {

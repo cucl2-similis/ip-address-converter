@@ -17,9 +17,9 @@ describe("Factory", () => {
 
             const converter = new Converter();
             const validator = new Validator();
-            const view = new View(setWasValidated, setInvalidFeedback);
+            const view = new View(setWasValidated, setInvalidFeedback, setResultDto);
 
-            const expectedController = new Controller(converter, validator, view, setResultDto);
+            const expectedController = new Controller(converter, validator, view);
 
             const actualController = Factory.createController(setWasValidated, setInvalidFeedback, setResultDto);
 

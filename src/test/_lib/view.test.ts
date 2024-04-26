@@ -9,7 +9,8 @@ describe("View", () => {
 
             const setWasValidated = jest.fn();
             const setInvalidFeedback = jest.fn();
-            const view = new View(setWasValidated, setInvalidFeedback);
+            const setResultDto = jest.fn();
+            const view = new View(setWasValidated, setInvalidFeedback, setResultDto);
 
             view.updateErrorMessage();
 
@@ -24,7 +25,8 @@ describe("View", () => {
 
             const setWasValidated = jest.fn();
             const setInvalidFeedback = jest.fn();
-            const view = new View(setWasValidated, setInvalidFeedback);
+            const setResultDto = jest.fn();
+            const view = new View(setWasValidated, setInvalidFeedback, setResultDto);
 
             view.updateErrorMessage("");
 
@@ -39,7 +41,8 @@ describe("View", () => {
 
             const setWasValidated = jest.fn();
             const setInvalidFeedback = jest.fn();
-            const view = new View(setWasValidated, setInvalidFeedback);
+            const setResultDto = jest.fn();
+            const view = new View(setWasValidated, setInvalidFeedback, setResultDto);
 
             view.updateErrorMessage("エラー");
 

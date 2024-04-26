@@ -40,13 +40,13 @@ describe("Resultコンポーネント", () => {
             expect(container.textContent).toEqual(expect.stringContaining("IP"));
         });
 
-        test("見出し「Subnet info」が表示されること。", () => {
+        test("見出し「Class」が表示されること。", () => {
 
             act(() => {
                 root.render(<Result resultDto={null} />);
             });
 
-            expect(container.textContent).toEqual(expect.stringContaining("Subnet info"));
+            expect(container.textContent).toEqual(expect.stringContaining("Class"));
         });
 
         test("見出し「CIDR」が表示されること。", () => {
@@ -124,7 +124,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("IP"))
+                                 .find(element => element.textContent!.includes("IP"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -143,7 +143,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("IP"))
+                                 .find(element => element.textContent!.includes("IP"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -155,6 +155,44 @@ describe("Resultコンポーネント", () => {
             expect(actual).toEqual(expect.not.stringContaining("--------.--------.--------.--------"));
         });
 
+
+        test("変換結果DTO未設定の場合、アドレスクラスが初期表示であること。", () => {
+
+            act(() => {
+                root.render(<Result resultDto={null} />);
+            });
+
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = Array.from(nodeList)
+                                 .filter(element => element.textContent != null)
+                                 .find(element => element.textContent!.includes("Class"));
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.textContent;
+
+            expect(actual).toEqual(expect.stringContaining("-"));
+        });
+
+        test("変換結果DTO設定済の場合、アドレスクラスが正しく表示されること。", () => {
+
+            act(() => {
+                root.render(<Result resultDto={resultDto} />);
+            });
+
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = Array.from(nodeList)
+                                 .filter(element => element.textContent != null)
+                                 .find(element => element.textContent!.includes("Class"));
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.textContent;
+
+            expect(actual).toEqual(expect.stringContaining("C"));
+            expect(actual).toEqual(expect.not.stringContaining("-"));
+        });
+
         test("変換結果DTO未設定の場合、CIDRが初期表示であること。", () => {
 
             act(() => {
@@ -164,7 +202,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("CIDR"))
+                                 .find(element => element.textContent!.includes("CIDR"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -182,7 +220,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("CIDR"))
+                                 .find(element => element.textContent!.includes("CIDR"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -201,7 +239,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Subnet mask"))
+                                 .find(element => element.textContent!.includes("Subnet mask"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -220,7 +258,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Subnet mask"))
+                                 .find(element => element.textContent!.includes("Subnet mask"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -241,7 +279,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Network address"))
+                                 .find(element => element.textContent!.includes("Network address"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -260,7 +298,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Network address"))
+                                 .find(element => element.textContent!.includes("Network address"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -281,7 +319,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Broadcast address"))
+                                 .find(element => element.textContent!.includes("Broadcast address"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -300,7 +338,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Broadcast address"))
+                                 .find(element => element.textContent!.includes("Broadcast address"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -321,7 +359,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Available range"))
+                                 .find(element => element.textContent!.includes("Available range"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -350,7 +388,7 @@ describe("Resultコンポーネント", () => {
             const nodeList = container.querySelectorAll(selectorsOfSubheading);
             const element = Array.from(nodeList)
                                  .filter(element => element.textContent != null)
-                                 .find(element => element.textContent!.includes("Available range"))
+                                 .find(element => element.textContent!.includes("Available range"));
 
             Assertions.assertNotNull(element);
             Assertions.assertNotNull(element.parentElement);
@@ -364,7 +402,7 @@ describe("Resultコンポーネント", () => {
             Assertions.assertNotNull(last.textContent);
             const actual = first.textContent + to.textContent + last.textContent;
 
-            const decExpected = RegExp("192.168.10.1" + ".*" + "to" + ".*" + "192.168.10.254");
+            const decExpected = new RegExp("192.168.10.1" + ".*" + "to" + ".*" + "192.168.10.254");
             const binExpected = new RegExp("11000000.10101000.00001010.00000001" + ".*" + "to" + ".*" + "11000000.10101000.00001010.11111110");
             expect(actual).toEqual(expect.stringMatching(decExpected));
             expect(actual).toEqual(expect.stringMatching(binExpected));
@@ -373,6 +411,185 @@ describe("Resultコンポーネント", () => {
             const binNotExpected = new RegExp("--------.--------.--------.--------" + ".*" + "to" + ".*" + "--------.--------.--------.--------");
             expect(actual).toEqual(expect.not.stringMatching(decNotExpected));
             expect(actual).toEqual(expect.not.stringMatching(binNotExpected));
+        });
+    });
+
+    describe("テキスト確認", () => {
+
+        const selectorsOfSubheading = "div.col-md-3.col-lg-2.fw-bold.text-md-end";
+
+        const resultDto = Builder.ofResultDto()
+                .decIpAddressArray([192, 168, 10, 1])
+                .decSubnetMaskArray([255, 255, 255, 0])
+                .decNetworkAddressArray([192, 168, 10, 0])
+                .decBroadcastAddressArray([192, 168, 10, 255])
+                .decFirstAvailableIpAddressArray([192, 168, 10, 1])
+                .decLastAvailableIpAddressArray([192, 168, 10, 254])
+                .binIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                .binSubnetMaskArray(["11111111", "11111111", "11111111", "00000000"])
+                .binNetworkAddressArray(["11000000", "10101000", "00001010", "00000000"])
+                .binBroadcastAddressArray(["11000000", "10101000", "00001010", "11111111"])
+                .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "11111110"])
+                .cidr(24)
+                .build();
+
+        let expected: HTMLDivElement;
+        let secondarySpan: HTMLSpanElement;
+        let boldFontsSpan: HTMLSpanElement;
+        let plainTextSpan: HTMLSpanElement;
+
+        beforeEach(() => {
+            expected = document.createElement("div");
+
+            secondarySpan = document.createElement("span");
+            boldFontsSpan = document.createElement("span");
+            plainTextSpan = document.createElement("span");
+
+            expected.className = "col-md-6 col-lg-8 font-monospace d-none d-md-block";
+            secondarySpan.className = "text-secondary";
+            boldFontsSpan.className = "fw-bold";
+        });
+
+        afterEach(() => {
+            plainTextSpan.remove();
+            boldFontsSpan.remove();
+            secondarySpan.remove();
+            expected.remove();
+        });
+
+        test("2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
+
+            act(() => {
+                root.render(<Result resultDto={resultDto} />);
+            });
+
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = Array.from(nodeList)
+                                 .filter(element => element.textContent != null)
+                                 .find(element => element.textContent!.includes("IP"));
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.lastChild;
+
+            secondarySpan.append(boldFontsSpan);
+            boldFontsSpan.append("110");
+            secondarySpan.append("00000.10101000.00001010");
+            plainTextSpan.append(".00000001");
+
+            expected.append(secondarySpan);
+            expected.append(plainTextSpan);
+
+            expect(actual).toEqual(expected);
+        });
+
+        test("2進数サブネットマスクに、セカンダリテキスト表示が適用されること。", () => {
+
+            act(() => {
+                root.render(<Result resultDto={resultDto} />);
+            });
+
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = Array.from(nodeList)
+                                 .filter(element => element.textContent != null)
+                                 .find(element => element.textContent!.includes("Subnet mask"));
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.lastChild;
+
+            secondarySpan.append(boldFontsSpan);
+            secondarySpan.append("11111111.11111111.11111111");
+            plainTextSpan.append(".00000000");
+
+            expected.append(secondarySpan);
+            expected.append(plainTextSpan);
+
+            expect(actual).toEqual(expected);
+        });
+
+        test("2進数ネットワークアドレスに、セカンダリテキスト表示が適用されること。", () => {
+
+            act(() => {
+                root.render(<Result resultDto={resultDto} />);
+            });
+
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = Array.from(nodeList)
+                                 .filter(element => element.textContent != null)
+                                 .find(element => element.textContent!.includes("Network address"));
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.lastChild;
+
+            secondarySpan.append(boldFontsSpan);
+            secondarySpan.append("11000000.10101000.00001010");
+            plainTextSpan.append(".00000000");
+
+            expected.append(secondarySpan);
+            expected.append(plainTextSpan);
+
+            expect(actual).toEqual(expected);
+        });
+
+        test("2進数ブロードキャストアドレスに、セカンダリテキスト表示が適用されること。", () => {
+
+            act(() => {
+                root.render(<Result resultDto={resultDto} />);
+            });
+
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = Array.from(nodeList)
+                                 .filter(element => element.textContent != null)
+                                 .find(element => element.textContent!.includes("Broadcast address"));
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.lastChild;
+
+            secondarySpan.append(boldFontsSpan);
+            secondarySpan.append("11000000.10101000.00001010");
+            plainTextSpan.append(".11111111");
+
+            expected.append(secondarySpan);
+            expected.append(plainTextSpan);
+
+            expect(actual).toEqual(expected);
+        });
+
+        test("2進数利用可能範囲IPアドレスに、セカンダリテキスト表示が適用されること。", () => {
+
+            act(() => {
+                root.render(<Result resultDto={resultDto} />);
+            });
+
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = Array.from(nodeList)
+                                 .filter(element => element.textContent != null)
+                                 .find(element => element.textContent!.includes("Available range"));
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const to = element.parentElement.nextElementSibling;
+            Assertions.assertNotNull(to);
+            const lastDiv = to.nextElementSibling;
+            Assertions.assertNotNull(lastDiv);
+            const actualFirst = element.parentElement.lastChild;
+            const actualLast = lastDiv.lastChild;
+
+            secondarySpan.append(boldFontsSpan);
+            secondarySpan.append("11000000.10101000.00001010");
+
+            expected.append(secondarySpan);
+            expected.append(plainTextSpan);
+
+            plainTextSpan.append(".00000001");
+            expect(actualFirst).toEqual(expected);
+
+            plainTextSpan.replaceChildren(".11111110");
+            expect(actualLast).toEqual(expected);
         });
     });
 });
