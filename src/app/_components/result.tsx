@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Radio, Symbol } from "../_lib/const";
+import { Radio } from "../_lib/const";
 import { ResultDto } from "../_lib/result-dto";
 import { BinInfo } from "./bin-info";
 import { DecInfo } from "./dec-info";
@@ -35,14 +35,15 @@ export function Result({
         <div className="row">
           <Subheading>IP</Subheading>
           <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecIpAddress()} />
-          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinIpAddress()} />
+          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinIpAddress()} getEndIndexForBoldFrom={resultDto => resultDto.getAddressClass().index} />
         </div>
-      </div>
-      <div className="row">
-        <h5 className="mt-3">Subnet info</h5>
-        <div className="row mb-1 mb-md-2">
+        <div className="row mt-1 mt-md-2">
+          <Subheading>Class</Subheading>
+          <div className="col-md-9 col-lg-10">{resultDto == null ? "-" : resultDto.getAddressClass().name}</div>
+        </div>
+        <div className="row mt-1 mt-md-0 mb-md-2">
           <Subheading>CIDR</Subheading>
-          <div className="col-md-9 col-lg-6">
+          <div className="col-md-9 col-lg-10">
             <span className="font-monospace">/{resultDto == null ? "--" : resultDto.getCidr()}</span>
             <span className="text-secondary"> ( <span className="font-monospace">{resultDto == null ? "--" : resultDto.getNumberOfAvailableIps()}</span> IPs )</span>
           </div>

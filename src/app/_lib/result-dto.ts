@@ -1,4 +1,4 @@
-import { IpAddress, Symbol } from "./const";
+import { AddressClass, IpAddress, Symbol } from "./const";
 
 /**
  * 変換結果DTO
@@ -183,15 +183,26 @@ export class ResultDto {
     }
 
     /**
+     * アドレスクラス取得
+     * @returns アドレスクラス
+     */
+    public getAddressClass(): AddressClass {
+        if (this.getBinIpAddress().startsWith("0"))   return AddressClass.A;
+        if (this.getBinIpAddress().startsWith("10"))  return AddressClass.B;
+        if (this.getBinIpAddress().startsWith("110")) return AddressClass.C;
+        return AddressClass.UNDEFINED;
+    }
+
+    /**
      * 利用可能IPアドレス数取得  
      * 数値を表す言語依存の文字列（例: `,`区切り）を取得する。
      * @returns 利用可能IPアドレス数
      */
     public getNumberOfAvailableIps(): string {
 
-        const numberOfAvailableIps = IpAddress.RADIX_BINARY              // 基数2
-                                     ** (IpAddress.IP_DIGIT - this.cidr) // ホスト部の桁数 乗
-                                     - 2;                                // - ネットワークアドレス, ブロードキャストアドレス
+        const numberOfAvailableIps = IpAddress.RADIX_BINARY                 // 基数2
+                                     ** (IpAddress.IPv4_DIGITS - this.cidr) // ホスト部の桁数 乗
+                                     - 2;                                   // - ネットワークアドレス, ブロードキャストアドレス
 
         return numberOfAvailableIps.toLocaleString(); // 数値を表す言語依存の文字列（例:「,」区切り）
     }

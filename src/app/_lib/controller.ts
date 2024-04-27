@@ -1,7 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
 import { Assertions } from "./assertions";
 import { Converter } from "./converter";
-import { ResultDto } from "./result-dto";
 import { Validator } from "./validator";
 import { View } from "./view";
 
@@ -19,24 +17,18 @@ export class Controller {
     /** ビュー（画面表示制御） */
     private readonly view: View;
 
-    /** 変換結果DTO用 stateセッタ関数 */
-    private readonly setResultDto: Dispatch<SetStateAction<ResultDto | null>>;
-
     /**
      * コントローラ（ボタンイベント管理）
      * @param converter コンバータ（変換ロジック）
      * @param validator バリデータ（入力チェック）
      * @param view ビュー（画面表示制御）
-     * @param setResultDto 変換結果DTO用 stateセッタ関数
      */
     public constructor(converter: Converter,
                        validator: Validator,
-                       view: View,
-                       setResultDto: Dispatch<SetStateAction<ResultDto | null>>) {
+                       view: View) {
         this.converter = converter;
         this.validator = validator;
         this.view = view;
-        this.setResultDto = setResultDto;
     }
 
     /**
@@ -72,6 +64,6 @@ export class Controller {
 
         // 変換
         const resultDto = this.converter.convert(inputElement.value); // 変換処理実行
-        this.setResultDto(resultDto);                                 // 変換結果設定
+        this.view.updateResult(resultDto);                            // 変換結果更新
     }
 }
