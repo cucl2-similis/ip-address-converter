@@ -24,12 +24,12 @@ export function Result({
   const [radio, setRadio] = useState<Radio>(Radio.DEC);
 
   return (
-    <div className="my-3 p-3 pe-0 border">
+    <div className="my-3 p-3 pe-0 border rounded">
       <div className="row">
         <div className="row">
           <div className="d-flex justify-content-between">
             <h4>Result</h4>
-            <RadioButton radio={radio} setRadio={setRadio} />
+            <RadioButton prefix="result" radio={radio} setRadio={setRadio} optionalClass="d-md-none" />
           </div>
         </div>
         <div className="row">

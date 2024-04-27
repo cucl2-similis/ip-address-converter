@@ -31,7 +31,7 @@ export function Form({
           className={"needs-validation" + (wasValidated ? Symbol.SPACE + "was-validated" : Symbol.EMPTY)}
           onSubmit={formEvent => formEvent.preventDefault()}
           noValidate>
-      <div className="my-3 p-3 border">
+      <div className="my-3 p-3 border rounded">
         <h4>Form</h4>
         <div className="row g-3">
           <div className="col-md-3 col-lg-2">
