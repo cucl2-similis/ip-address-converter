@@ -1,5 +1,5 @@
 import { Assertions } from "./assertions";
-import { IpAddress, Regex, Symbol } from "./const";
+import { Char, IpAddress, Regex } from "./const";
 
 /** 変換ユーティリティ */
 export class ConversionUtils {
@@ -81,7 +81,7 @@ export class IpAddressUtils {
                                                        cidr: number): Readonly<{ binNetworkAddressArray: string[];
                                                                                  binBroadcastAddressArray: string[]; }> {
                                                                                              // 例）192.168.10.1/20 の場合
-        const ipAddress = binIpAddressArray.join(Symbol.EMPTY);                              // 11000000101010000000101000000001 (IPアドレス)
+        const ipAddress = binIpAddressArray.join(Char.EMPTY);                                // 11000000101010000000101000000001 (IPアドレス)
         const networkSection = ipAddress.substring(0, cidr);                                 // 11000000101010000000             (ネットワーク部)
         const hostSectionZero = IpAddress.BIT_STR_ZERO.repeat(IpAddress.IPv4_DIGITS - cidr); //                     000000000000 (ホスト部 - 0)
         const hostSectionOne = IpAddress.BIT_STR_ONE.repeat(IpAddress.IPv4_DIGITS - cidr);   //                     111111111111 (ホスト部 - 1)
@@ -108,7 +108,7 @@ export class IpAddressUtils {
     private static convertBinIpAddressToOctetArray(binIpAddress: string): string[] {
 
         //「.」が含まれている場合：文字列を「.」で区切った配列を返却
-        if (binIpAddress.includes(Symbol.PERIOD)) {
+        if (binIpAddress.includes(Char.PERIOD)) {
             return binIpAddress.split(Regex.PERIOD);
         }
 

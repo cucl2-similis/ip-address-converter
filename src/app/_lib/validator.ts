@@ -1,4 +1,4 @@
-import { AddressClass, IpAddress, Regex, Symbol } from "./const";
+import { AddressClass, Char, IpAddress, Regex } from "./const";
 
 /**
  * バリデータ（入力チェック）
@@ -19,7 +19,7 @@ export class Validator {
     public validate(formElement: HTMLFormElement, inputElement: HTMLInputElement): void {
         this.formElement = formElement;
         VerificationStream.of(inputElement)
-            .errorHandle("This field is required.", inputValue => inputValue === Symbol.EMPTY)
+            .errorHandle("This field is required.", inputValue => inputValue === Char.EMPTY)
             .errorHandle("Input value must be in format \"IP/CIDR (000.000.000.000/00)\".", Validations.isNotFormatOfIpWithCidr)
             .errorHandle("All octets must be between 0 and 255, and CIDR must be between 0 and 32.", Validations.isIncorrectRangeOfOctetsAndCidr)
             .errorHandle("All octets and CIDR must not start with 0.", Validations.startsWithZero)
@@ -288,6 +288,6 @@ class VerificationStream {
         }
 
         // エラーがない場合は空文字を設定
-        this.inputElement.setCustomValidity(Symbol.EMPTY);
+        this.inputElement.setCustomValidity(Char.EMPTY);
     }
 }

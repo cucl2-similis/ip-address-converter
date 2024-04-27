@@ -1,6 +1,6 @@
 
-/** 記号 */
-export class Symbol {
+/** 文字 */
+export class Char {
 
     /** ピリオド（ `.` ） */
     public static readonly PERIOD = ".";

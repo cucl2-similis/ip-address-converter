@@ -1,7 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction } from "react";
-import { Radio, Symbol } from "../_lib/const";
+import { Char, Radio } from "../_lib/const";
 
 /**
  * ラジオボタンコンポーネント  
@@ -17,7 +17,7 @@ export function RadioButton({
   prefix,
   radio,
   setRadio,
-  optionalClass = Symbol.EMPTY
+  optionalClass = Char.EMPTY
 }: Readonly<{
   prefix: string;
   radio: Radio;
@@ -25,7 +25,7 @@ export function RadioButton({
   optionalClass?: string;
 }>): JSX.Element {
   return (
-    <div className={"btn-group btn-group-sm" + Symbol.SPACE + optionalClass} role="group" aria-label={prefix + " Decimal and Binary radio toggle button group"}>
+    <div className={"btn-group btn-group-sm" + Char.SPACE + optionalClass} role="group" aria-label={prefix + " Decimal and Binary radio toggle button group"}>
       <input type="radio" className="btn-check" name={prefix + "-btn-radio"} id={prefix + "-btn-radio-dec"} autoComplete="off" checked={radio === Radio.DEC} onChange={() => setRadio(Radio.DEC)} />
       <label className="btn btn-outline-secondary" htmlFor={prefix + "-btn-radio-dec"}>DEC</label>
       <input type="radio" className="btn-check" name={prefix + "-btn-radio"} id={prefix + "-btn-radio-bin"} autoComplete="off" checked={radio === Radio.BIN} onChange={() => setRadio(Radio.BIN)} />

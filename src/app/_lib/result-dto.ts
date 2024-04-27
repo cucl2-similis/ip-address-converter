@@ -1,4 +1,4 @@
-import { AddressClass, IpAddress, Symbol } from "./const";
+import { AddressClass, Char, IpAddress } from "./const";
 
 /**
  * 変換結果DTO
@@ -83,7 +83,7 @@ export class ResultDto {
      * @returns 10進数IPアドレス
      */
     public getDecIpAddress(): string {
-        return this.decIpAddressArray.join(Symbol.PERIOD);
+        return this.decIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -91,7 +91,7 @@ export class ResultDto {
      * @returns 10進数サブネットマスク
      */
     public getDecSubnetMask(): string {
-        return this.decSubnetMaskArray.join(Symbol.PERIOD);
+        return this.decSubnetMaskArray.join(Char.PERIOD);
     }
 
     /**
@@ -99,7 +99,7 @@ export class ResultDto {
      * @returns 10進数ネットワークアドレス
      */
     public getDecNetworkAddress(): string {
-        return this.decNetworkAddressArray.join(Symbol.PERIOD);
+        return this.decNetworkAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -107,7 +107,7 @@ export class ResultDto {
      * @returns 10進数ブロードキャストアドレス
      */
     public getDecBroadcastAddress(): string {
-        return this.decBroadcastAddressArray.join(Symbol.PERIOD);
+        return this.decBroadcastAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -115,7 +115,7 @@ export class ResultDto {
      * @returns 10進数利用可能範囲開始IPアドレス
      */
     public getDecFirstAvailableIpAddress(): string {
-        return this.decFirstAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.decFirstAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -123,7 +123,7 @@ export class ResultDto {
      * @returns 10進数利用可能範囲終了IPアドレス
      */
     public getDecLastAvailableIpAddress(): string {
-        return this.decLastAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.decLastAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -131,7 +131,7 @@ export class ResultDto {
      * @returns 2進数IPアドレス
      */
     public getBinIpAddress(): string {
-        return this.binIpAddressArray.join(Symbol.PERIOD);
+        return this.binIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -139,7 +139,7 @@ export class ResultDto {
      * @returns 2進数サブネットマスク
      */
     public getBinSubnetMask(): string {
-        return this.binSubnetMaskArray.join(Symbol.PERIOD);
+        return this.binSubnetMaskArray.join(Char.PERIOD);
     }
 
     /**
@@ -147,7 +147,7 @@ export class ResultDto {
      * @returns 2進数ネットワークアドレス
      */
     public getBinNetworkAddress(): string {
-        return this.binNetworkAddressArray.join(Symbol.PERIOD);
+        return this.binNetworkAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -155,7 +155,7 @@ export class ResultDto {
      * @returns 2進数ブロードキャストアドレス
      */
     public getBinBroadcastAddress(): string {
-        return this.binBroadcastAddressArray.join(Symbol.PERIOD);
+        return this.binBroadcastAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -163,7 +163,7 @@ export class ResultDto {
      * @returns 2進数利用可能範囲開始IPアドレス
      */
     public getBinFirstAvailableIpAddress(): string {
-        return this.binFirstAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.binFirstAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -171,7 +171,7 @@ export class ResultDto {
      * @returns 2進数利用可能範囲終了IPアドレス
      */
     public getBinLastAvailableIpAddress(): string {
-        return this.binLastAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.binLastAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
