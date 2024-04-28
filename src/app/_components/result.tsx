@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Char, IpAddress, Radio } from "../_lib/const";
 import { ResultDto } from "../_lib/result-dto";
+import { BinSpan } from "./bin-span";
 import { RadioButton } from "./radio-button";
 
 /**
@@ -31,8 +32,8 @@ export function Result({
         </div>
         <div className="row">
           <Subheading>IP</Subheading>
-          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecIpAddress()} />
-          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinIpAddress()} getEndIndexForBoldFrom={resultDto => resultDto.getAddressClass().index} />
+          <DecResult radio={radio} resultDto={resultDto} getDecResultFrom={resultDto => resultDto.getDecIpAddress()} />
+          <BinResult radio={radio} resultDto={resultDto} getBinResultFrom={resultDto => resultDto.getBinIpAddress()} getEndIndexForBoldFrom={resultDto => resultDto.getAddressClass().index} />
         </div>
         <div className="row mt-1 mt-md-2">
           <Subheading>Class</Subheading>
@@ -47,23 +48,23 @@ export function Result({
         </div>
         <div className="row mt-1 mt-md-0">
           <Subheading>Subnet mask</Subheading>
-          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecSubnetMask()} />
-          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinSubnetMask()} />
+          <DecResult radio={radio} resultDto={resultDto} getDecResultFrom={resultDto => resultDto.getDecSubnetMask()} />
+          <BinResult radio={radio} resultDto={resultDto} getBinResultFrom={resultDto => resultDto.getBinSubnetMask()} />
         </div>
         <div className="row mt-1 mt-md-0">
           <Subheading>Network address</Subheading>
-          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecNetworkAddress()} />
-          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinNetworkAddress()} />
+          <DecResult radio={radio} resultDto={resultDto} getDecResultFrom={resultDto => resultDto.getDecNetworkAddress()} />
+          <BinResult radio={radio} resultDto={resultDto} getBinResultFrom={resultDto => resultDto.getBinNetworkAddress()} />
         </div>
         <div className="row mt-1 mt-md-0">
           <Subheading>Broadcast address</Subheading>
-          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecBroadcastAddress()} />
-          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinBroadcastAddress()} />
+          <DecResult radio={radio} resultDto={resultDto} getDecResultFrom={resultDto => resultDto.getDecBroadcastAddress()} />
+          <BinResult radio={radio} resultDto={resultDto} getBinResultFrom={resultDto => resultDto.getBinBroadcastAddress()} />
         </div>
         <div className="row mt-1 mt-md-2">
           <Subheading>Available range</Subheading>
-          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecFirstAvailableIpAddress()} />
-          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinFirstAvailableIpAddress()} />
+          <DecResult radio={radio} resultDto={resultDto} getDecResultFrom={resultDto => resultDto.getDecFirstAvailableIpAddress()} />
+          <BinResult radio={radio} resultDto={resultDto} getBinResultFrom={resultDto => resultDto.getBinFirstAvailableIpAddress()} />
         </div>
         <div className="row">
           <div className={"lh-1 fst-italic d-md-none"}>to</div>
@@ -71,8 +72,8 @@ export function Result({
           <div className={"lh-1 fst-italic d-none d-md-block col-md-6 col-lg-4"}>to</div>
         </div>
         <div className="row">
-          <DecInfo radio={radio} resultDto={resultDto} getDecInfoFrom={resultDto => resultDto.getDecLastAvailableIpAddress()} optionalClass="offset-md-3 offset-lg-2" />
-          <BinInfo radio={radio} resultDto={resultDto} getBinInfoFrom={resultDto => resultDto.getBinLastAvailableIpAddress()} />
+          <DecResult radio={radio} resultDto={resultDto} getDecResultFrom={resultDto => resultDto.getDecLastAvailableIpAddress()} optionalClass="offset-md-3 offset-lg-2" />
+          <BinResult radio={radio} resultDto={resultDto} getBinResultFrom={resultDto => resultDto.getBinLastAvailableIpAddress()} />
         </div>
       </div>
     </div>
@@ -95,103 +96,71 @@ function Subheading({
 }
 
 /**
- * 10進数情報コンポーネント  
- * 10進数情報表示用`div`要素を返却する。
+ * 10進数変換結果情報コンポーネント  
+ * 10進数変換結果情報表示用`div`要素を返却する。
  * 
  * `resultDto`が`null`の場合は初期表示、そうでない場合は  
- * `getDecInfoFrom(resultDto)`で取得した文字列を表示する。
+ * `getDecResultFrom(resultDto)`で取得した文字列を表示する。
  * @param props コンポーネント間の情報連携用プロパティ
  * @param props.radio ラジオボタン選択肢 state変数
  * @param props.resultDto 変換結果DTO state変数
- * @param props.getDecInfoFrom 10進数情報取得関数
+ * @param props.getDecResultFrom 10進数変換結果情報取得関数
  * @param props.optionalClass オプション`class`属性（デフォルト値：`""`）
- * @returns 10進数情報表示用`div`要素
+ * @returns 10進数変換結果情報表示用`div`要素
  */
-function DecInfo({
+function DecResult({
   radio,
   resultDto,
-  getDecInfoFrom,
+  getDecResultFrom,
   optionalClass = Char.EMPTY
 }: Readonly<{
   radio: Radio;
   resultDto: ResultDto | null;
-  getDecInfoFrom: (resultDto: ResultDto) => string;
+  getDecResultFrom: (resultDto: ResultDto) => string;
   optionalClass?: string;
 }>): JSX.Element {
   return (
     <div className={"col-md-3 col-lg-2 font-monospace"
                     + (radio === Radio.DEC ? Char.EMPTY : Char.SPACE + "d-none d-md-block")
                     + Char.SPACE + optionalClass}>
-      {resultDto == null ? "---.---.---.---" : getDecInfoFrom(resultDto)}
+      {resultDto == null ? "---.---.---.---" : getDecResultFrom(resultDto)}
     </div>
   );
 }
 
 /**
- * 2進数情報コンポーネント  
- * 2進数情報表示用`div`要素を返却する。
+ * 2進数変換結果情報コンポーネント  
+ * 2進数変換結果情報表示用`div`要素を返却する。
  * 
  * `resultDto`が`null`の場合は初期表示、そうでない場合は  
- * `getBinInfoFrom(resultDto)`で取得した文字列を表示する。
+ * `getBinResultFrom(resultDto)`で取得した文字列を表示する。
  * @param props コンポーネント間の情報連携用プロパティ
  * @param props.radio ラジオボタン選択肢 state変数
  * @param props.resultDto 変換結果DTO state変数
- * @param props.getBinInfoFrom 2進数情報取得関数
+ * @param props.getBinResultFrom 2進数変換結果情報取得関数
  * @param props.getEndIndexForBoldFrom 太字フォント適用文字列終了インデックス取得関数（デフォルト戻り値：`0`）
- * @returns 2進数情報表示用`div`要素
+ * @returns 2進数変換結果情報表示用`div`要素
  */
-function BinInfo({
+function BinResult({
   radio,
   resultDto,
-  getBinInfoFrom,
+  getBinResultFrom,
   getEndIndexForBoldFrom = resultDto => 0
 }: Readonly<{
   radio: Radio;
   resultDto: ResultDto | null;
-  getBinInfoFrom: (resultDto: ResultDto) => string;
+  getBinResultFrom: (resultDto: ResultDto) => string;
   getEndIndexForBoldFrom?: (resultDto: ResultDto) => number;
 }>): JSX.Element {
   return (
     <div className={"col-md-6 col-lg-8 font-monospace" + (radio === Radio.BIN ? Char.EMPTY : Char.SPACE + "d-none d-md-block")}>
       {resultDto == null ? "--------.--------.--------.--------"
-                         : <ConvertedBinInfo resultDto={resultDto} binInfo={getBinInfoFrom(resultDto)} endIndexForBold={getEndIndexForBoldFrom(resultDto)} />}
+                         : <BinSpan binIpAddress={getBinResultFrom(resultDto)}
+                                    endIndexForBold={getEndIndexForBoldFrom(resultDto)}
+                                    endIndexForSecondary={resultDto.getBinSubnetMask()                 // 2進数サブネットマスクのうち、
+                                                                   .lastIndexOf(IpAddress.BIT_STR_ONE) // ビットが「1」となっている最後の桁の、
+                                                                   + 1} />                             // 次の位置を終了インデックスとする。
+      }
     </div>
-  );
-}
-
-/**
- * 変換済2進数情報コンポーネント
- * 
- * 2進数結果表示テキストを調整するための、  
- * 2進数情報コンポーネント（`BinInfo`）内部呼び出し用privateコンポーネントとして、  
- * 変換済2進数情報を分割した`span`要素を返却する。
- * @param props コンポーネント間の情報連携用プロパティ
- * @param props.resultDto 変換結果DTO state変数
- * @param props.binInfo 2進数情報
- * @param props.endIndexForBold 太字フォント適用文字列終了インデックス
- * @returns 変換済2進数情報表示用`span`要素
- */
-function ConvertedBinInfo({
-  resultDto,
-  binInfo,
-  endIndexForBold
-}: Readonly<{
-  resultDto: ResultDto;
-  binInfo: string;
-  endIndexForBold: number;
-}>): JSX.Element {
-
-  // セカンダリテキスト適用文字列終了インデックス
-  const endIndexForSecondary = resultDto.getBinSubnetMask()                 // 2進数サブネットマスクのうち、
-                                        .lastIndexOf(IpAddress.BIT_STR_ONE) // ビットが「1」となっている最後の桁の、
-                                        + 1;                                // 次の位置を終了インデックスとする。
-  return (
-    <>
-      <span className="text-secondary">
-        <span className="fw-bold">{binInfo.substring(0, endIndexForBold)}</span>
-        {binInfo.substring(endIndexForBold, endIndexForSecondary)}
-      </span>
-      <span>{binInfo.substring(endIndexForSecondary)}</span>
-    </>
   );
 }
