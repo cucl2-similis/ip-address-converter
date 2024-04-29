@@ -62,5 +62,14 @@ describe("IpAddressConverterコンポーネント", () => {
 
             expect(container.textContent).toEqual(expect.stringContaining("Result"));
         });
+
+        test("子コンポーネント<IpTable/>の見出し「Simple IP Address Table」が表示されること。", () => {
+
+            act(() => {
+                root.render(<IpAddressConverter/>);
+            });
+
+            expect(container.textContent).toEqual(expect.stringContaining("Simple IP Address Table"));
+        });
     });
 });

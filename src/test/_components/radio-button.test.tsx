@@ -23,10 +23,11 @@ describe("RadioButtonコンポーネント", () => {
 
         test("ラベル「DEC」「BIN」と、対応するラジオボタンが表示されること。", () => {
 
+            const prefix = "test";
             const radio = Radio.DEC;
             const setRadio = jest.fn();
             act(() => {
-                root.render(<RadioButton radio={radio} setRadio={setRadio} />);
+                root.render(<RadioButton prefix={prefix} radio={radio} setRadio={setRadio} />);
             });
 
             const decLabelName = "DEC";
@@ -41,16 +42,54 @@ describe("RadioButtonコンポーネント", () => {
             expect(binInputElement.tagName).toEqual("INPUT");
             expect(binInputElement.type).toEqual("radio");
         });
+
+        test("オプションclass属性が設定された場合、class属性が追加されること。", () => {
+
+            const expected = "expectedOptionalClass";
+            const prefix = "test";
+            const radio = Radio.DEC;
+            const setRadio = jest.fn();
+
+            act(() => {
+                root.render(<RadioButton prefix={prefix} radio={radio} setRadio={setRadio} optionalClass={expected} />);
+            });
+
+            const radioDivElement = container.children[0];
+            expect(radioDivElement.className).toEqual(expect.stringContaining(expected));
+        });
+
+        test("ラジオボタングループ識別用接頭辞が適切に付加されること。", () => {
+
+            const expected = "expectedPrefix";
+            const radio = Radio.DEC;
+            const setRadio = jest.fn();
+
+            act(() => {
+                root.render(<RadioButton prefix={expected} radio={radio} setRadio={setRadio} />);
+            });
+
+            const radioDivElement = container.children[0];
+            expect(radioDivElement.getAttribute("aria-label")).toEqual(expected + " Decimal and Binary radio toggle button group");
+
+            const decInputElement = screen.getByLabelText<HTMLInputElement>("DEC");
+            expect(decInputElement.name).toEqual(expected + "-btn-radio");
+            expect(decInputElement.id).toEqual(expected + "-btn-radio-dec");
+
+            const binInputElement = screen.getByLabelText<HTMLInputElement>("BIN");
+            expect(binInputElement.name).toEqual(expected + "-btn-radio");
+            expect(binInputElement.id).toEqual(expected + "-btn-radio-bin");
+        });
     });
 
     describe("切替動作確認", () => {
 
         test("ラジオボタン切り替え時、stateセッタ関数に正しいラジオボタン選択肢が渡されること。", () => {
 
+            const prefix = "test";
             const radio = Radio.DEC;
             const setRadio = jest.fn();
             act(() => {
-                root.render(<RadioButton radio={radio} setRadio={setRadio} />);
+                root.render(<RadioButton prefix={prefix} radio={radio} setRadio={setRadio} />);
             });
 
             const decInputElement = screen.getByLabelText<HTMLInputElement>("DEC");
@@ -73,10 +112,11 @@ describe("RadioButtonコンポーネント", () => {
 
         test("引数のstate変数が項目「10進数」の場合、ラジオボタンの選択肢「DEC」が選択されること。", () => {
 
+            const prefix = "test";
             const radio = Radio.DEC;
             const setRadio = jest.fn();
             act(() => {
-                root.render(<RadioButton radio={radio} setRadio={setRadio} />);
+                root.render(<RadioButton prefix={prefix} radio={radio} setRadio={setRadio} />);
             });
 
             const decInputElement = screen.getByLabelText<HTMLInputElement>("DEC");
@@ -88,10 +128,11 @@ describe("RadioButtonコンポーネント", () => {
 
         test("引数のstate変数が項目「2進数」の場合、ラジオボタンの選択肢「BIN」が選択されること。", () => {
 
+            const prefix = "test";
             const radio = Radio.BIN;
             const setRadio = jest.fn();
             act(() => {
-                root.render(<RadioButton radio={radio} setRadio={setRadio} />);
+                root.render(<RadioButton prefix={prefix} radio={radio} setRadio={setRadio} />);
             });
 
             const decInputElement = screen.getByLabelText<HTMLInputElement>("DEC");
