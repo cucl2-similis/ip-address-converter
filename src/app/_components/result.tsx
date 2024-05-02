@@ -37,7 +37,11 @@ export function Result({
         </div>
         <div className="row mt-1 mt-md-2">
           <Subheading>Class</Subheading>
-          <div className="col-md-9 col-lg-10">{resultDto == null ? "-" : resultDto.getAddressClass().name}</div>
+          <div className="col-md-9 col-lg-10">
+            <span>{resultDto == null ? "-" : resultDto.getAddressClass().name}</span>
+            {resultDto == null || resultDto.getAddressBlock().scope == null ? Char.EMPTY
+                                                                            : <span className="text-secondary"> ( {resultDto.getAddressBlock().scope} )</span>}
+          </div>
         </div>
         <div className="row mt-1 mt-md-0 mb-md-2">
           <Subheading>CIDR</Subheading>

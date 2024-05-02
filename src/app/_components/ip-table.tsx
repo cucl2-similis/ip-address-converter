@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AddressClass, IpAddress, Radio } from "../_lib/const";
+import { AddressBlock, Radio } from "../_lib/const";
 import { BinSpan } from "./bin-span";
 import { RadioButton } from "./radio-button";
 
@@ -13,10 +13,6 @@ import { RadioButton } from "./radio-button";
 export function IpTable(): JSX.Element {
 
   const [radio, setRadio] = useState<Radio>(Radio.DEC);
-
-  const secondaryIndexForClassA = IpAddress.OCTET_DIGITS * 1;     // オクテット1ブロックの桁数 × 1
-  const secondaryIndexForClassB = IpAddress.OCTET_DIGITS * 2 + 1; // オクテット1ブロックの桁数 × 2 +「.」1つ分
-  const secondaryIndexForClassC = IpAddress.OCTET_DIGITS * 3 + 2; // オクテット1ブロックの桁数 × 3 +「.」2つ分
 
   return (
     <SingleItemAccordion displayNameOnHeader="Simple IP Address Table">
@@ -30,66 +26,37 @@ export function IpTable(): JSX.Element {
           <tbody>
             <tr>
               <td rowSpan={3}><h6>Class A</h6></td>
-              <td>Public</td>
-              {radio === Radio.DEC ? <IpRangeTd first="1.0.0.0" last="9.255.255.255" />
-                                   : <IpRangeTd first="00000001.00000000.00000000.00000000" last="00001001.11111111.11111111.11111111"
-                                                endIndexForBold={AddressClass.A.index} endIndexForSecondary={secondaryIndexForClassA} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.A_PUBLIC_FORMER} />
             </tr>
             <tr>
-              <td>Private</td>
-              {radio === Radio.DEC ? <IpRangeTd first="10.0.0.0" last="10.255.255.255" />
-                                   : <IpRangeTd first="00001010.00000000.00000000.00000000" last="00001010.11111111.11111111.11111111"
-                                                endIndexForBold={AddressClass.A.index} endIndexForSecondary={secondaryIndexForClassA} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.A_PRIVATE_BLOCK} />
             </tr>
             <tr>
-              <td>Public</td>
-              {radio === Radio.DEC ? <IpRangeTd first="11.0.0.0" last="126.255.255.255" />
-                                   : <IpRangeTd first="00001011.00000000.00000000.00000000" last="01111110.11111111.11111111.11111111"
-                                                endIndexForBold={AddressClass.A.index} endIndexForSecondary={secondaryIndexForClassA} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.A_PUBLIC_LATTER} />
             </tr>
             <tr>
               <td className="fw-bold">localhost</td>
-              <td></td>
-              {radio === Radio.DEC ? <IpRangeTd first="127.0.0.0" last="127.255.255.255" />
-                                   : <IpRangeTd first="01111111.00000000.00000000.00000000" last="01111111.11111111.11111111.11111111" />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.LOCALHOST_BLOCK} />
             </tr>
             <tr>
               <td rowSpan={3}><h6>Class B</h6></td>
-              <td>Public</td>
-              {radio === Radio.DEC ? <IpRangeTd first="128.0.0.0" last="172.15.255.255" />
-                                   : <IpRangeTd first="10000000.00000000.00000000.00000000" last="10101100.00001111.11111111.11111111"
-                                                endIndexForBold={AddressClass.B.index} endIndexForSecondary={secondaryIndexForClassB} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.B_PUBLIC_FORMER} />
             </tr>
             <tr>
-              <td>Private</td>
-              {radio === Radio.DEC ? <IpRangeTd first="172.16.0.0" last="172.31.255.255" />
-                                   : <IpRangeTd first="10101100.00010000.00000000.00000000" last="10101100.00011111.11111111.11111111"
-                                                endIndexForBold={AddressClass.B.index} endIndexForSecondary={secondaryIndexForClassB} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.B_PRIVATE_BLOCK} />
             </tr>
             <tr>
-              <td>Public</td>
-              {radio === Radio.DEC ? <IpRangeTd first="172.32.0.0" last="191.255.255.255" />
-                                   : <IpRangeTd first="10101100.00100000.00000000.00000000" last="10111111.11111111.11111111.11111111"
-                                                endIndexForBold={AddressClass.B.index} endIndexForSecondary={secondaryIndexForClassB} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.B_PUBLIC_LATTER} />
             </tr>
             <tr>
               <td rowSpan={3}><h6>Class C</h6></td>
-              <td>Public</td>
-              {radio === Radio.DEC ? <IpRangeTd first="192.0.0.0" last="192.167.255.255" />
-                                   : <IpRangeTd first="11000000.00000000.00000000.00000000" last="11000000.10100111.11111111.11111111"
-                                                endIndexForBold={AddressClass.C.index} endIndexForSecondary={secondaryIndexForClassC} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.C_PUBLIC_FORMER} />
             </tr>
             <tr>
-              <td>Private</td>
-              {radio === Radio.DEC ? <IpRangeTd first="192.168.0.0" last="192.168.255.255" />
-                                   : <IpRangeTd first="11000000.10101000.00000000.00000000" last="11000000.10101000.11111111.11111111"
-                                                endIndexForBold={AddressClass.C.index} endIndexForSecondary={secondaryIndexForClassC} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.C_PRIVATE_BLOCK} />
             </tr>
             <tr>
-              <td>Public</td>
-              {radio === Radio.DEC ? <IpRangeTd first="192.169.0.0" last="223.255.255.255" />
-                                   : <IpRangeTd first="11000000.10101001.00000000.00000000" last="11011111.11111111.11111111.11111111"
-                                                endIndexForBold={AddressClass.C.index} endIndexForSecondary={secondaryIndexForClassC} />}
+              <IpRangeTd radio={radio} addressBlock={AddressBlock.C_PUBLIC_LATTER} />
             </tr>
           </tbody>
         </table>
@@ -102,34 +69,32 @@ export function IpTable(): JSX.Element {
  * IPアドレス範囲用表データセル要素コンポーネント  
  * IPアドレス範囲用`td`要素を返却する。
  * @param props コンポーネント間の情報連携用プロパティ
- * @param props.first 開始IPアドレス
- * @param props.last 終了IPアドレス
- * @param props.endIndexForBold 太字フォント適用文字列終了インデックス（デフォルト値：`0`）
- * @param props.endIndexForSecondary セカンダリテキスト適用文字列終了インデックス（デフォルト値：`0`）
+ * @param props.radio ラジオボタン選択肢 state変数
+ * @param props.addressBlock アドレスブロック
  * @returns IPアドレス範囲用`td`要素
  */
 function IpRangeTd({
-  first,
-  last,
-  endIndexForBold = 0,
-  endIndexForSecondary = 0
+  radio,
+  addressBlock
 }: Readonly<{
-  first: string;
-  last: string;
-  endIndexForBold?: number;
-  endIndexForSecondary?: number;
+  radio: Radio;
+  addressBlock: AddressBlock;
 }>): JSX.Element {
-
-  const isDecimal = endIndexForSecondary === 0 && endIndexForBold === 0;
-
   return (
     <>
+      <td>{addressBlock.scope}</td>
       <td className="font-monospace">
-        {isDecimal ? first : <BinSpan binIpAddress={first} endIndexForBold={endIndexForBold} endIndexForSecondary={endIndexForSecondary} />}
+        {radio === Radio.DEC ? addressBlock.addressRange.decFirst
+                             : <BinSpan binIpAddress={addressBlock.addressRange.binFirst}
+                                        endIndexForBold={addressBlock.addressClass.index}
+                                        endIndexForSecondary={addressBlock.addressClass.subnetIndex} />}
       </td>
       <td>-</td>
       <td className="font-monospace">
-        {isDecimal ? last : <BinSpan binIpAddress={last} endIndexForBold={endIndexForBold} endIndexForSecondary={endIndexForSecondary} />}
+        {radio === Radio.DEC ? addressBlock.addressRange.decLast
+                             : <BinSpan binIpAddress={addressBlock.addressRange.binLast}
+                                        endIndexForBold={addressBlock.addressClass.index}
+                                        endIndexForSecondary={addressBlock.addressClass.subnetIndex} />}
       </td>
     </>
   );

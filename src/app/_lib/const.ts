@@ -86,15 +86,71 @@ export const Radio = {
 } as const;
 export type Radio = typeof Radio[keyof typeof Radio];
 
+/** アドレス範囲 */
+export const AddressRange = {
+    /** クラスA（パブリック前半） */
+    A_PUBLIC_FORMER: {decFirst: "1.0.0.0",     decLast: "9.255.255.255",   binFirst: "00000001.00000000.00000000.00000000", binLast: "00001001.11111111.11111111.11111111"},
+    /** クラスA（プライベート） */
+    A_PRIVATE_RANGE: {decFirst: "10.0.0.0",    decLast: "10.255.255.255",  binFirst: "00001010.00000000.00000000.00000000", binLast: "00001010.11111111.11111111.11111111"},
+    /** クラスA（パブリック後半） */
+    A_PUBLIC_LATTER: {decFirst: "11.0.0.0",    decLast: "126.255.255.255", binFirst: "00001011.00000000.00000000.00000000", binLast: "01111110.11111111.11111111.11111111"},
+    /** ローカルホスト */
+    LOCALHOST_RANGE: {decFirst: "127.0.0.0",   decLast: "127.255.255.255", binFirst: "01111111.00000000.00000000.00000000", binLast: "01111111.11111111.11111111.11111111"},
+    /** クラスB（パブリック前半） */
+    B_PUBLIC_FORMER: {decFirst: "128.0.0.0",   decLast: "172.15.255.255",  binFirst: "10000000.00000000.00000000.00000000", binLast: "10101100.00001111.11111111.11111111"},
+    /** クラスB（プライベート） */
+    B_PRIVATE_RANGE: {decFirst: "172.16.0.0",  decLast: "172.31.255.255",  binFirst: "10101100.00010000.00000000.00000000", binLast: "10101100.00011111.11111111.11111111"},
+    /** クラスB（パブリック後半） */
+    B_PUBLIC_LATTER: {decFirst: "172.32.0.0",  decLast: "191.255.255.255", binFirst: "10101100.00100000.00000000.00000000", binLast: "10111111.11111111.11111111.11111111"},
+    /** クラスC（パブリック前半） */
+    C_PUBLIC_FORMER: {decFirst: "192.0.0.0",   decLast: "192.167.255.255", binFirst: "11000000.00000000.00000000.00000000", binLast: "11000000.10100111.11111111.11111111"},
+    /** クラスC（プライベート） */
+    C_PRIVATE_RANGE: {decFirst: "192.168.0.0", decLast: "192.168.255.255", binFirst: "11000000.10101000.00000000.00000000", binLast: "11000000.10101000.11111111.11111111"},
+    /** クラスC（パブリック後半） */
+    C_PUBLIC_LATTER: {decFirst: "192.169.0.0", decLast: "223.255.255.255", binFirst: "11000000.10101001.00000000.00000000", binLast: "11011111.11111111.11111111.11111111"},
+    /** 未定義 */
+    UNDEFINED: {decFirst: Char.EMPTY, decLast: Char.EMPTY, binFirst: Char.EMPTY, binLast: Char.EMPTY}
+} as const;
+export type AddressRange = typeof AddressRange[keyof typeof AddressRange];
+
 /** アドレスクラス */
 export const AddressClass = {
-    /** クラスA */
-    A: {index: 1, name: "A"},
-    /** クラスB */
-    B: {index: 2, name: "B"},
-    /** クラスC */
-    C: {index: 3, name: "C"},
+    /** Class A */                     // オクテット1ブロックの桁数 × 1
+    A: {name: "A", index: 1, subnetIndex: IpAddress.OCTET_DIGITS * 1},
+    /** Class B */                     // オクテット1ブロックの桁数 × 2 +「.」1つ分
+    B: {name: "B", index: 2, subnetIndex: IpAddress.OCTET_DIGITS * 2 + 1},
+    /** Class C */                     // オクテット1ブロックの桁数 × 3 +「.」2つ分
+    C: {name: "C", index: 3, subnetIndex: IpAddress.OCTET_DIGITS * 3 + 2},
+    /** ローカルホスト */
+    LOCALHOST: {name: "localhost", index: 0, subnetIndex: 0},
     /** 未定義 */
-    UNDEFINED: {index: 0, name: "-"}
+    UNDEFINED: {name: "-", index: 0, subnetIndex: 0}
 } as const;
 export type AddressClass = typeof AddressClass[keyof typeof AddressClass];
+
+/** アドレスブロック */
+export const AddressBlock = {
+    /** クラスA（パブリック前半） */
+    A_PUBLIC_FORMER: {scope: "Public",  addressRange: AddressRange.A_PUBLIC_FORMER, addressClass: AddressClass.A},
+    /** クラスA（プライベート） */
+    A_PRIVATE_BLOCK: {scope: "Private", addressRange: AddressRange.A_PRIVATE_RANGE, addressClass: AddressClass.A},
+    /** クラスA（パブリック後半） */
+    A_PUBLIC_LATTER: {scope: "Public",  addressRange: AddressRange.A_PUBLIC_LATTER, addressClass: AddressClass.A},
+    /** ローカルホスト */
+    LOCALHOST_BLOCK: {scope: undefined, addressRange: AddressRange.LOCALHOST_RANGE, addressClass: AddressClass.LOCALHOST},
+    /** クラスB（パブリック前半） */
+    B_PUBLIC_FORMER: {scope: "Public",  addressRange: AddressRange.B_PUBLIC_FORMER, addressClass: AddressClass.B},
+    /** クラスB（プライベート） */
+    B_PRIVATE_BLOCK: {scope: "Private", addressRange: AddressRange.B_PRIVATE_RANGE, addressClass: AddressClass.B},
+    /** クラスB（パブリック後半） */
+    B_PUBLIC_LATTER: {scope: "Public",  addressRange: AddressRange.B_PUBLIC_LATTER, addressClass: AddressClass.B},
+    /** クラスC（パブリック前半） */
+    C_PUBLIC_FORMER: {scope: "Public",  addressRange: AddressRange.C_PUBLIC_FORMER, addressClass: AddressClass.C},
+    /** クラスC（プライベート） */
+    C_PRIVATE_BLOCK: {scope: "Private", addressRange: AddressRange.C_PRIVATE_RANGE, addressClass: AddressClass.C},
+    /** クラスC（パブリック後半） */
+    C_PUBLIC_LATTER: {scope: "Public",  addressRange: AddressRange.C_PUBLIC_LATTER, addressClass: AddressClass.C},
+    /** 未定義 */
+    UNDEFINED: {scope: undefined, addressRange: AddressRange.UNDEFINED, addressClass: AddressClass.UNDEFINED}
+} as const;
+export type AddressBlock = typeof AddressBlock[keyof typeof AddressBlock];

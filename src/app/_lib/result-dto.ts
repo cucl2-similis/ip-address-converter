@@ -1,4 +1,4 @@
-import { AddressClass, Char, IpAddress } from "./const";
+import { AddressBlock, AddressClass, Char } from "./const";
 
 /**
  * 変換結果DTO
@@ -33,6 +33,10 @@ export class ResultDto {
 
     /** CIDR */
     private readonly cidr: number;
+    /** アドレスブロック */
+    private readonly addressBlock: AddressBlock;
+    /** 利用可能IPアドレス数 */
+    private readonly numberOfAvailableIps: number;
 
     /**
      * 変換結果DTO
@@ -49,6 +53,8 @@ export class ResultDto {
      * @param binFirstAvailableIpAddressArray 2進数利用可能範囲開始IPアドレス配列
      * @param binLastAvailableIpAddressArray 2進数利用可能範囲終了IPアドレス配列
      * @param cidr CIDR
+     * @param addressBlock アドレスブロック
+     * @param numberOfAvailableIps 利用可能IPアドレス数
      */
     public constructor(decIpAddressArray: number[],
                        decSubnetMaskArray: number[],
@@ -62,7 +68,9 @@ export class ResultDto {
                        binBroadcastAddressArray: string[],
                        binFirstAvailableIpAddressArray: string[],
                        binLastAvailableIpAddressArray: string[],
-                       cidr: number) {
+                       cidr: number,
+                       addressBlock: AddressBlock,
+                       numberOfAvailableIps: number) {
         this.decIpAddressArray = decIpAddressArray;
         this.decSubnetMaskArray = decSubnetMaskArray;
         this.decNetworkAddressArray = decNetworkAddressArray;
@@ -76,6 +84,8 @@ export class ResultDto {
         this.binFirstAvailableIpAddressArray = binFirstAvailableIpAddressArray;
         this.binLastAvailableIpAddressArray = binLastAvailableIpAddressArray;
         this.cidr = cidr;
+        this.addressBlock = addressBlock;
+        this.numberOfAvailableIps = numberOfAvailableIps;
     }
 
     /**
@@ -183,14 +193,19 @@ export class ResultDto {
     }
 
     /**
+     * アドレスブロック取得
+     * @returns アドレスブロック
+     */
+    public getAddressBlock(): AddressBlock {
+        return this.addressBlock;
+    }
+
+    /**
      * アドレスクラス取得
      * @returns アドレスクラス
      */
     public getAddressClass(): AddressClass {
-        if (this.getBinIpAddress().startsWith("0"))   return AddressClass.A;
-        if (this.getBinIpAddress().startsWith("10"))  return AddressClass.B;
-        if (this.getBinIpAddress().startsWith("110")) return AddressClass.C;
-        return AddressClass.UNDEFINED;
+        return this.getAddressBlock().addressClass;
     }
 
     /**
@@ -199,11 +214,6 @@ export class ResultDto {
      * @returns 利用可能IPアドレス数
      */
     public getNumberOfAvailableIps(): string {
-
-        const numberOfAvailableIps = IpAddress.RADIX_BINARY                 // 基数2
-                                     ** (IpAddress.IPv4_DIGITS - this.cidr) // ホスト部の桁数 乗
-                                     - 2;                                   // - ネットワークアドレス, ブロードキャストアドレス
-
-        return numberOfAvailableIps.toLocaleString(); // 数値を表す言語依存の文字列（例:「,」区切り）
+        return this.numberOfAvailableIps.toLocaleString();
     }
 }
