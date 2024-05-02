@@ -1,4 +1,5 @@
 import { Builder } from "@/app/_lib/builder";
+import { AddressBlock } from "@/app/_lib/const";
 import { Converter } from "@/app/_lib/converter";
 import { describe, expect, test } from "@jest/globals";
 
@@ -26,6 +27,8 @@ describe("Converter", () => {
                     .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
                     .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "11111110"])
                     .cidr(24)
+                    .addressBlock(AddressBlock.C_PRIVATE_BLOCK)
+                    .numberOfAvailableIps(254)
                     .build();
 
             expect(actual).toEqual(expected);

@@ -180,6 +180,8 @@ describe("IpTableコンポーネント", () => {
             });
 
             const tableRowNum = 3;
+            expected.append(secondarySpan);
+            expected.append(plainTextSpan);
 
             const binInputElement = screen.getByLabelText<HTMLInputElement>("BIN");
             fireEvent.click(binInputElement);
@@ -188,10 +190,12 @@ describe("IpTableコンポーネント", () => {
             const actualLast = tbody.children[tableRowNum].lastChild;
             const actualFirst = actualLast?.previousSibling?.previousSibling;
 
-            expected.append("01111111.00000000.00000000.00000000");
+            secondarySpan.append(boldFontsSpan);
+            plainTextSpan.append("01111111.00000000.00000000.00000000");
             expect(actualFirst).toEqual(expected);
 
-            expected.replaceChildren("01111111.11111111.11111111.11111111");
+            secondarySpan.replaceChildren(boldFontsSpan);
+            plainTextSpan.replaceChildren("01111111.11111111.11111111.11111111");
             expect(actualLast).toEqual(expected);
         });
 

@@ -54,8 +54,8 @@ export class IpAddressUtils {
     private constructor() { }
 
     /**
-     * 10進数IPアドレス配列 から 対応するアドレスブロック を決定
-     * @param binIpAddressArray 10進数IPアドレス配列
+     * 2進数IPアドレス配列 から 対応するアドレスブロック を決定
+     * @param binIpAddressArray 2進数IPアドレス配列
      * @returns アドレスブロック
      */
     public static determineAddressBlockBy(binIpAddressArray: string[]): AddressBlock {
@@ -114,11 +114,11 @@ export class IpAddressUtils {
     }
 
     /**
-     * 10進数IPアドレス配列 から 一致するアドレスブロック を選択  
+     * 2進数IPアドレス配列 から 一致するアドレスブロック を選択  
      * 指定されたアドレスブロックのいずれにも一致しない場合は`AddressBlock.UNDEFINED`を返却する。
-     * @param binIpAddressArray 10進数IPアドレス配列
+     * @param binIpAddressArray 2進数IPアドレス配列
      * @param addressBlocks アドレスブロック
-     * @returns 指定されたIPアドレス（10進数IPアドレス配列）が属するアドレスブロック
+     * @returns 指定されたIPアドレス（2進数IPアドレス配列）が属するアドレスブロック
      */
     private static selectAddressBlockBy(binIpAddressArray: string[], ...addressBlocks: AddressBlock[]): AddressBlock {
 

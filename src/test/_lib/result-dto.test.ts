@@ -1,5 +1,5 @@
 import { Builder } from "@/app/_lib/builder";
-import { AddressClass } from "@/app/_lib/const";
+import { AddressBlock, AddressClass } from "@/app/_lib/const";
 import { ResultDto } from "@/app/_lib/result-dto";
 import { describe, expect, test } from "@jest/globals";
 
@@ -30,6 +30,8 @@ describe("ResultDto", () => {
             expect(actual.getBinFirstAvailableIpAddress()).toEqual("");
             expect(actual.getBinLastAvailableIpAddress()).toEqual("");
             expect(actual.getCidr()).toEqual(0);
+            expect(actual.getAddressBlock()).toEqual(AddressBlock.UNDEFINED);
+            expect(actual.getNumberOfAvailableIps()).toEqual((0).toLocaleString());
         });
     });
 
@@ -49,6 +51,8 @@ describe("ResultDto", () => {
                 .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
                 .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "11111110"])
                 .cidr(24)
+                .addressBlock(AddressBlock.C_PRIVATE_BLOCK)
+                .numberOfAvailableIps(254)
                 .build();
 
         test("10進数IPアドレスを取得できること。", () => {
@@ -142,42 +146,17 @@ describe("ResultDto", () => {
             expect(actual).toEqual(expected);
         });
 
-        test("アドレスクラス（クラスA）を取得できること。", () => {
+        test("アドレスブロックを取得できること。", () => {
 
-            const expected = AddressClass.A;
-            const actual = Builder.ofResultDto()
-                                  .binIpAddressArray(["00001010", "00000000", "00000000", "00000001"])
-                                  .build()
-                                  .getAddressClass();
+            const expected = AddressBlock.C_PRIVATE_BLOCK;
+            const actual = resultDto.getAddressBlock();
             expect(actual).toEqual(expected);
         });
 
-        test("アドレスクラス（クラスB）を取得できること。", () => {
-
-            const expected = AddressClass.B;
-            const actual = Builder.ofResultDto()
-                                  .binIpAddressArray(["10101100", "00010000", "00000000", "00000001"])
-                                  .build()
-                                  .getAddressClass();
-            expect(actual).toEqual(expected);
-        });
-
-        test("アドレスクラス（クラスC）を取得できること。", () => {
+        test("アドレスクラスを取得できること。", () => {
 
             const expected = AddressClass.C;
-            const actual = Builder.ofResultDto()
-                                  .binIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
-                                  .build()
-                                  .getAddressClass();
-            expect(actual).toEqual(expected);
-        });
-
-        test("アドレスクラス（未定義）を取得できること。", () => {
-
-            const expected = AddressClass.UNDEFINED;
-            const actual = Builder.ofResultDto()
-                                  .build()
-                                  .getAddressClass();
+            const actual = resultDto.getAddressClass();
             expect(actual).toEqual(expected);
         });
 

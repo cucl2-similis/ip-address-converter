@@ -1,3 +1,4 @@
+import { AddressBlock } from "@/app/_lib/const";
 import { ArrayUtils, ConversionUtils, IpAddressUtils } from "@/app/_lib/utils";
 import { describe, expect, test } from "@jest/globals";
 
@@ -45,6 +46,177 @@ describe("ArrayUtils", () => {
 });
 
 describe("IpAddressUtils", () => {
+
+    describe("determineAddressBlockBy", () => {
+
+        test("クラスA（パブリック前半）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["00000001", "00000000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.A_PUBLIC_FORMER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスA（パブリック前半）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["00001001", "11111111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.A_PUBLIC_FORMER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスA（プライベート）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["00001010", "00000000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.A_PRIVATE_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスA（プライベート）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["00001010", "11111111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.A_PRIVATE_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスA（パブリック後半）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["00001011", "00000000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.A_PUBLIC_LATTER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスA（パブリック後半）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["01111110", "11111111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.A_PUBLIC_LATTER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("ローカルホスト開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["01111111", "00000000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.LOCALHOST_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("ローカルホスト終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["01111111", "11111111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.LOCALHOST_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスB（パブリック前半）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["10000000", "00000000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.B_PUBLIC_FORMER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスB（パブリック前半）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["10101100", "00001111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.B_PUBLIC_FORMER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスB（プライベート）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["10101100", "00010000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.B_PRIVATE_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスB（プライベート）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["10101100", "00011111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.B_PRIVATE_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスB（パブリック後半）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["10101100", "00100000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.B_PUBLIC_LATTER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスB（パブリック後半）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["10111111", "11111111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.B_PUBLIC_LATTER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスC（パブリック前半）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["11000000", "00000000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.C_PUBLIC_FORMER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスC（パブリック前半）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["11000000", "10100111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.C_PUBLIC_FORMER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスC（プライベート）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["11000000", "10101000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.C_PRIVATE_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスC（プライベート）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["11000000", "10101000", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.C_PRIVATE_BLOCK;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスC（パブリック後半）開始2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["11000000", "10101001", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.C_PUBLIC_LATTER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("クラスC（パブリック後半）終了2進数IPアドレス配列に応じたアドレスブロックが返却されること。", () => {
+
+            const binIpAddressArray  = ["11011111", "11111111", "11111111", "11111111"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.C_PUBLIC_LATTER;
+            expect(actual).toEqual(expected);
+        });
+
+        test("2進数IPアドレス配列に一致するアドレスブロックが無い場合、アドレスブロック未定義が返却されること。", () => {
+
+            const binIpAddressArray  = ["00000000", "00000000", "00000000", "00000000"];
+            const actual = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+            const expected = AddressBlock.UNDEFINED;
+            expect(actual).toEqual(expected);
+        });
+    });
 
     describe("createBinSubnetMaskArray", () => {
 

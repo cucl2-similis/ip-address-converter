@@ -1,6 +1,7 @@
 import { Result } from "@/app/_components/result";
 import { Assertions } from "@/app/_lib/assertions";
 import { Builder } from "@/app/_lib/builder";
+import { AddressBlock } from "@/app/_lib/const";
 import { afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { Root, createRoot } from "react-dom/client";
@@ -36,6 +37,8 @@ describe("Resultコンポーネント", () => {
             .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
             .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "11111110"])
             .cidr(24)
+            .addressBlock(AddressBlock.C_PRIVATE_BLOCK)
+            .numberOfAvailableIps(254)
             .build();
 
     describe("静的表示確認", () => {
@@ -170,7 +173,28 @@ describe("Resultコンポーネント", () => {
             expect(actual).toEqual(expect.stringContaining("-"));
         });
 
-        test("変換結果DTO設定済の場合、アドレスクラスが正しく表示されること。", () => {
+        test("変換結果DTO設定済の場合、アドレスクラス（パブリック）が正しく表示されること。", () => {
+
+            const cPublicResultDto = Builder.ofResultDto()
+                                            .addressBlock(AddressBlock.C_PUBLIC_FORMER)
+                                            .build();
+            act(() => {
+                root.render(<Result resultDto={cPublicResultDto} />);
+            });
+
+            const textContent = "Class";
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = getElementByTextContent(nodeList, textContent);
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.textContent;
+
+            expect(actual).toEqual(expect.stringContaining("C ( Public )"));
+            expect(actual).toEqual(expect.not.stringContaining("-"));
+        });
+
+        test("変換結果DTO設定済の場合、アドレスクラス（プライベート）が正しく表示されること。", () => {
 
             act(() => {
                 root.render(<Result resultDto={resultDto} />);
@@ -184,7 +208,30 @@ describe("Resultコンポーネント", () => {
             Assertions.assertNotNull(element.parentElement);
             const actual = element.parentElement.textContent;
 
-            expect(actual).toEqual(expect.stringContaining("C"));
+            expect(actual).toEqual(expect.stringContaining("C ( Private )"));
+            expect(actual).toEqual(expect.not.stringContaining("-"));
+        });
+
+        test("変換結果DTO設定済の場合、アドレスクラス（ローカルホスト）が正しく表示されること。", () => {
+
+            const localhostResultDto = Builder.ofResultDto()
+                                              .addressBlock(AddressBlock.LOCALHOST_BLOCK)
+                                              .build();
+            act(() => {
+                root.render(<Result resultDto={localhostResultDto} />);
+            });
+
+            const textContent = "Class";
+            const nodeList = container.querySelectorAll(selectorsOfSubheading);
+            const element = getElementByTextContent(nodeList, textContent);
+
+            Assertions.assertNotNull(element);
+            Assertions.assertNotNull(element.parentElement);
+            const actual = element.parentElement.textContent;
+
+            expect(actual).toEqual(expect.stringContaining("localhost"));
+            expect(actual).toEqual(expect.not.stringContaining("("));
+            expect(actual).toEqual(expect.not.stringContaining(")"));
             expect(actual).toEqual(expect.not.stringContaining("-"));
         });
 

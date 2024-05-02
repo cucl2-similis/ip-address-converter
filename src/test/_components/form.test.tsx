@@ -1,5 +1,6 @@
 import { Form } from "@/app/_components/form";
 import { Builder } from "@/app/_lib/builder";
+import { AddressBlock } from "@/app/_lib/const";
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { Root, createRoot } from "react-dom/client";
@@ -102,6 +103,8 @@ describe("Formコンポーネント", () => {
                     .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
                     .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "11111110"])
                     .cidr(24)
+                    .addressBlock(AddressBlock.C_PRIVATE_BLOCK)
+                    .numberOfAvailableIps(254)
                     .build();
 
             expect(setResultDto).toHaveBeenCalledWith(resultDto);

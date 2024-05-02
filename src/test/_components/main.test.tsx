@@ -1,4 +1,4 @@
-import { IpAddressConverter } from "@/app/main";
+import { IpAddressConverter } from "@/app/_components/main";
 import { afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import { act } from "@testing-library/react";
 import { Root, createRoot } from "react-dom/client";
