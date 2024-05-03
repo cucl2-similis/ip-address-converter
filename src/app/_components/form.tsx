@@ -1,7 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Symbol } from "../_lib/const";
+import { Char } from "../_lib/const";
 import { Factory } from "../_lib/factory";
 import { ResultDto } from "../_lib/result-dto";
 
@@ -22,16 +22,16 @@ export function Form({
   const inputElementRef = useRef<HTMLInputElement>(null);
 
   const [wasValidated, setWasValidated] = useState(false);
-  const [invalidFeedback, setInvalidFeedback] = useState(Symbol.EMPTY);
+  const [invalidFeedback, setInvalidFeedback] = useState(Char.EMPTY);
 
   const controller = Factory.createController(setWasValidated, setInvalidFeedback, setResultDto);
 
   return (
     <form ref={formElementRef}
-          className={"needs-validation" + (wasValidated ? Symbol.SPACE + "was-validated" : Symbol.EMPTY)}
+          className={"needs-validation" + (wasValidated ? Char.SPACE + "was-validated" : Char.EMPTY)}
           onSubmit={formEvent => formEvent.preventDefault()}
           noValidate>
-      <div className="my-3 p-3 border">
+      <div className="my-3 p-3 border rounded">
         <h4>Form</h4>
         <div className="row g-3">
           <div className="col-md-3 col-lg-2">

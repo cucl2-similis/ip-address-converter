@@ -1,3 +1,4 @@
+import { AddressBlock } from "./const";
 import { ResultDto } from "./result-dto";
 
 /**
@@ -34,6 +35,8 @@ class ResultDtoBuilder {
     private _binLastAvailableIpAddressArray: string[] = [];
 
     private _cidr: number = 0;
+    private _addressBlock: AddressBlock = AddressBlock.UNDEFINED;
+    private _numberOfAvailableIps: number = 0;
 
     /**
      * 10進数IPアドレス配列 設定（未設定の場合は空配列）
@@ -154,6 +157,27 @@ class ResultDtoBuilder {
     }
 
     /**
+     * アドレスブロック 設定（未設定の場合は`AddressBlock.UNDEFINED`）
+     * @param addressBlock アドレスブロック
+     * @returns 変換結果DTOビルダー
+     */
+    public addressBlock(addressBlock: AddressBlock): ResultDtoBuilder {
+        this._addressBlock = addressBlock;
+        return this;
+    }
+
+    /**
+     * 利用可能IPアドレス数 設定（未設定の場合は0）
+     * @param numberOfAvailableIps 利用可能IPアドレス数
+     * @returns 変換結果DTOビルダー
+     */
+    public numberOfAvailableIps(numberOfAvailableIps: number): ResultDtoBuilder {
+        this._numberOfAvailableIps = numberOfAvailableIps;
+        return this;
+    }
+
+
+    /**
      * 変換結果DTO生成
      * @returns 変換結果DTO
      */
@@ -170,6 +194,8 @@ class ResultDtoBuilder {
                              this._binBroadcastAddressArray,
                              this._binFirstAvailableIpAddressArray,
                              this._binLastAvailableIpAddressArray,
-                             this._cidr);
+                             this._cidr,
+                             this._addressBlock,
+                             this._numberOfAvailableIps);
     }
 }

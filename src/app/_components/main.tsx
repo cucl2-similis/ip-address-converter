@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Form } from "./_components/form";
-import { ResultDto } from "./_lib/result-dto";
-import { Result } from "./_components/result";
+import { ResultDto } from "../_lib/result-dto";
+import { Form } from "./form";
+import { IpTable } from "./ip-table";
+import { Result } from "./result";
 
 /**
  * IP Address Converter コンポーネント  
@@ -21,6 +22,7 @@ export function IpAddressConverter(): JSX.Element {
       </div>
       <Form setResultDto={setResultDto} />
       <Result resultDto={resultDto} />
+      <IpTable resultDto={resultDto} />
     </div>
   );
 }

@@ -49,6 +49,13 @@ export class Converter {
                                                                               IpAddress.FOURTH_OCTET_INDEX,
                                                                               element => { const decimal = ConversionUtils.convertBinaryToDecimal(element);
                                                                                            return ConversionUtils.convertDecimalToBinary(decimal - 1); });
+
+        const addressBlock = IpAddressUtils.determineAddressBlockBy(binIpAddressArray);
+
+        const numberOfAvailableIps = IpAddress.RADIX_BINARY            // 基数2
+                                     ** (IpAddress.IPv4_DIGITS - cidr) // ホスト部の桁数 乗
+                                     - 2;                              // - ネットワークアドレス, ブロードキャストアドレス
+
         return Builder.ofResultDto()
                 .decIpAddressArray(decIpAddressArray)                             // 10進数IPアドレス配列
                 .cidr(cidr)                                                       // CIDR
@@ -63,6 +70,8 @@ export class Converter {
                 .decLastAvailableIpAddressArray(decLastAvailableIpAddressArray)   // 10進数利用可能範囲終了IPアドレス配列
                 .binFirstAvailableIpAddressArray(binFirstAvailableIpAddressArray) // 2進数利用可能範囲開始IPアドレス配列
                 .binLastAvailableIpAddressArray(binLastAvailableIpAddressArray)   // 2進数利用可能範囲終了IPアドレス配列
+                .addressBlock(addressBlock)                                       // アドレスブロック
+                .numberOfAvailableIps(numberOfAvailableIps)                       // 利用可能IPアドレス数
                 .build();                                                         // 変換結果DTO生成
     }
 }

@@ -1,4 +1,4 @@
-import { AddressClass, IpAddress, Symbol } from "./const";
+import { AddressBlock, AddressClass, Char } from "./const";
 
 /**
  * 変換結果DTO
@@ -33,6 +33,10 @@ export class ResultDto {
 
     /** CIDR */
     private readonly cidr: number;
+    /** アドレスブロック */
+    private readonly addressBlock: AddressBlock;
+    /** 利用可能IPアドレス数 */
+    private readonly numberOfAvailableIps: number;
 
     /**
      * 変換結果DTO
@@ -49,6 +53,8 @@ export class ResultDto {
      * @param binFirstAvailableIpAddressArray 2進数利用可能範囲開始IPアドレス配列
      * @param binLastAvailableIpAddressArray 2進数利用可能範囲終了IPアドレス配列
      * @param cidr CIDR
+     * @param addressBlock アドレスブロック
+     * @param numberOfAvailableIps 利用可能IPアドレス数
      */
     public constructor(decIpAddressArray: number[],
                        decSubnetMaskArray: number[],
@@ -62,7 +68,9 @@ export class ResultDto {
                        binBroadcastAddressArray: string[],
                        binFirstAvailableIpAddressArray: string[],
                        binLastAvailableIpAddressArray: string[],
-                       cidr: number) {
+                       cidr: number,
+                       addressBlock: AddressBlock,
+                       numberOfAvailableIps: number) {
         this.decIpAddressArray = decIpAddressArray;
         this.decSubnetMaskArray = decSubnetMaskArray;
         this.decNetworkAddressArray = decNetworkAddressArray;
@@ -76,6 +84,8 @@ export class ResultDto {
         this.binFirstAvailableIpAddressArray = binFirstAvailableIpAddressArray;
         this.binLastAvailableIpAddressArray = binLastAvailableIpAddressArray;
         this.cidr = cidr;
+        this.addressBlock = addressBlock;
+        this.numberOfAvailableIps = numberOfAvailableIps;
     }
 
     /**
@@ -83,7 +93,7 @@ export class ResultDto {
      * @returns 10進数IPアドレス
      */
     public getDecIpAddress(): string {
-        return this.decIpAddressArray.join(Symbol.PERIOD);
+        return this.decIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -91,7 +101,7 @@ export class ResultDto {
      * @returns 10進数サブネットマスク
      */
     public getDecSubnetMask(): string {
-        return this.decSubnetMaskArray.join(Symbol.PERIOD);
+        return this.decSubnetMaskArray.join(Char.PERIOD);
     }
 
     /**
@@ -99,7 +109,7 @@ export class ResultDto {
      * @returns 10進数ネットワークアドレス
      */
     public getDecNetworkAddress(): string {
-        return this.decNetworkAddressArray.join(Symbol.PERIOD);
+        return this.decNetworkAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -107,7 +117,7 @@ export class ResultDto {
      * @returns 10進数ブロードキャストアドレス
      */
     public getDecBroadcastAddress(): string {
-        return this.decBroadcastAddressArray.join(Symbol.PERIOD);
+        return this.decBroadcastAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -115,7 +125,7 @@ export class ResultDto {
      * @returns 10進数利用可能範囲開始IPアドレス
      */
     public getDecFirstAvailableIpAddress(): string {
-        return this.decFirstAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.decFirstAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -123,7 +133,7 @@ export class ResultDto {
      * @returns 10進数利用可能範囲終了IPアドレス
      */
     public getDecLastAvailableIpAddress(): string {
-        return this.decLastAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.decLastAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -131,7 +141,7 @@ export class ResultDto {
      * @returns 2進数IPアドレス
      */
     public getBinIpAddress(): string {
-        return this.binIpAddressArray.join(Symbol.PERIOD);
+        return this.binIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -139,7 +149,7 @@ export class ResultDto {
      * @returns 2進数サブネットマスク
      */
     public getBinSubnetMask(): string {
-        return this.binSubnetMaskArray.join(Symbol.PERIOD);
+        return this.binSubnetMaskArray.join(Char.PERIOD);
     }
 
     /**
@@ -147,7 +157,7 @@ export class ResultDto {
      * @returns 2進数ネットワークアドレス
      */
     public getBinNetworkAddress(): string {
-        return this.binNetworkAddressArray.join(Symbol.PERIOD);
+        return this.binNetworkAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -155,7 +165,7 @@ export class ResultDto {
      * @returns 2進数ブロードキャストアドレス
      */
     public getBinBroadcastAddress(): string {
-        return this.binBroadcastAddressArray.join(Symbol.PERIOD);
+        return this.binBroadcastAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -163,7 +173,7 @@ export class ResultDto {
      * @returns 2進数利用可能範囲開始IPアドレス
      */
     public getBinFirstAvailableIpAddress(): string {
-        return this.binFirstAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.binFirstAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -171,7 +181,7 @@ export class ResultDto {
      * @returns 2進数利用可能範囲終了IPアドレス
      */
     public getBinLastAvailableIpAddress(): string {
-        return this.binLastAvailableIpAddressArray.join(Symbol.PERIOD);
+        return this.binLastAvailableIpAddressArray.join(Char.PERIOD);
     }
 
     /**
@@ -183,14 +193,19 @@ export class ResultDto {
     }
 
     /**
+     * アドレスブロック取得
+     * @returns アドレスブロック
+     */
+    public getAddressBlock(): AddressBlock {
+        return this.addressBlock;
+    }
+
+    /**
      * アドレスクラス取得
      * @returns アドレスクラス
      */
     public getAddressClass(): AddressClass {
-        if (this.getBinIpAddress().startsWith("0"))   return AddressClass.A;
-        if (this.getBinIpAddress().startsWith("10"))  return AddressClass.B;
-        if (this.getBinIpAddress().startsWith("110")) return AddressClass.C;
-        return AddressClass.UNDEFINED;
+        return this.getAddressBlock().addressClass;
     }
 
     /**
@@ -199,11 +214,6 @@ export class ResultDto {
      * @returns 利用可能IPアドレス数
      */
     public getNumberOfAvailableIps(): string {
-
-        const numberOfAvailableIps = IpAddress.RADIX_BINARY                 // 基数2
-                                     ** (IpAddress.IPv4_DIGITS - this.cidr) // ホスト部の桁数 乗
-                                     - 2;                                   // - ネットワークアドレス, ブロードキャストアドレス
-
-        return numberOfAvailableIps.toLocaleString(); // 数値を表す言語依存の文字列（例:「,」区切り）
+        return this.numberOfAvailableIps.toLocaleString();
     }
 }

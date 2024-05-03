@@ -1,5 +1,5 @@
 import { Assertions } from "./assertions";
-import { IpAddress, Regex, Symbol } from "./const";
+import { AddressBlock, Char, IpAddress, Regex } from "./const";
 
 /** 変換ユーティリティ */
 export class ConversionUtils {
@@ -54,6 +54,25 @@ export class IpAddressUtils {
     private constructor() { }
 
     /**
+     * 2進数IPアドレス配列 から 対応するアドレスブロック を決定
+     * @param binIpAddressArray 2進数IPアドレス配列
+     * @returns アドレスブロック
+     */
+    public static determineAddressBlockBy(binIpAddressArray: string[]): AddressBlock {
+
+        return this.selectAddressBlockBy(binIpAddressArray, AddressBlock.A_PUBLIC_FORMER,
+                                                            AddressBlock.A_PRIVATE_BLOCK,
+                                                            AddressBlock.A_PUBLIC_LATTER,
+                                                            AddressBlock.LOCALHOST_BLOCK,
+                                                            AddressBlock.B_PUBLIC_FORMER,
+                                                            AddressBlock.B_PRIVATE_BLOCK,
+                                                            AddressBlock.B_PUBLIC_LATTER,
+                                                            AddressBlock.C_PUBLIC_FORMER,
+                                                            AddressBlock.C_PRIVATE_BLOCK,
+                                                            AddressBlock.C_PUBLIC_LATTER);
+    }
+
+    /**
      * CIDR から 2進数サブネットマスク配列 を作成
      * @param cidr CIDR
      * @returns 2進数サブネットマスク配列
@@ -81,7 +100,7 @@ export class IpAddressUtils {
                                                        cidr: number): Readonly<{ binNetworkAddressArray: string[];
                                                                                  binBroadcastAddressArray: string[]; }> {
                                                                                              // 例）192.168.10.1/20 の場合
-        const ipAddress = binIpAddressArray.join(Symbol.EMPTY);                              // 11000000101010000000101000000001 (IPアドレス)
+        const ipAddress = binIpAddressArray.join(Char.EMPTY);                                // 11000000101010000000101000000001 (IPアドレス)
         const networkSection = ipAddress.substring(0, cidr);                                 // 11000000101010000000             (ネットワーク部)
         const hostSectionZero = IpAddress.BIT_STR_ZERO.repeat(IpAddress.IPv4_DIGITS - cidr); //                     000000000000 (ホスト部 - 0)
         const hostSectionOne = IpAddress.BIT_STR_ONE.repeat(IpAddress.IPv4_DIGITS - cidr);   //                     111111111111 (ホスト部 - 1)
@@ -92,6 +111,32 @@ export class IpAddressUtils {
         const binBroadcastAddressArray = this.convertBinIpAddressToOctetArray(broadcastAddress); // オクテットごとの配列に変換
 
         return {binNetworkAddressArray, binBroadcastAddressArray};
+    }
+
+    /**
+     * 2進数IPアドレス配列 から 一致するアドレスブロック を選択  
+     * 指定されたアドレスブロックのいずれにも一致しない場合は`AddressBlock.UNDEFINED`を返却する。
+     * @param binIpAddressArray 2進数IPアドレス配列
+     * @param addressBlocks アドレスブロック
+     * @returns 指定されたIPアドレス（2進数IPアドレス配列）が属するアドレスブロック
+     */
+    private static selectAddressBlockBy(binIpAddressArray: string[], ...addressBlocks: AddressBlock[]): AddressBlock {
+
+        const binaryWithoutDots = binIpAddressArray.join(Char.EMPTY);
+        const decimal = ConversionUtils.convertBinaryToDecimal(binaryWithoutDots);
+
+        for (const addressBlock of addressBlocks) {
+
+            const binFirstWithoutDots = addressBlock.addressRange.binFirst.replaceAll(Char.PERIOD, Char.EMPTY);
+            const binLastWithoutDots = addressBlock.addressRange.binLast.replaceAll(Char.PERIOD, Char.EMPTY);
+
+            if (ConversionUtils.convertBinaryToDecimal(binFirstWithoutDots) <= decimal
+                                                                            && decimal <= ConversionUtils.convertBinaryToDecimal(binLastWithoutDots)) {
+                return addressBlock;
+            }
+        }
+
+        return AddressBlock.UNDEFINED;
     }
 
     /**
@@ -108,7 +153,7 @@ export class IpAddressUtils {
     private static convertBinIpAddressToOctetArray(binIpAddress: string): string[] {
 
         //「.」が含まれている場合：文字列を「.」で区切った配列を返却
-        if (binIpAddress.includes(Symbol.PERIOD)) {
+        if (binIpAddress.includes(Char.PERIOD)) {
             return binIpAddress.split(Regex.PERIOD);
         }
 

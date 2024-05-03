@@ -1,4 +1,4 @@
-import { IpAddressConverter } from "@/app/main";
+import { IpAddressConverter } from "@/app/_components/main";
 import { afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import { act } from "@testing-library/react";
 import { Root, createRoot } from "react-dom/client";
@@ -61,6 +61,15 @@ describe("IpAddressConverterコンポーネント", () => {
             });
 
             expect(container.textContent).toEqual(expect.stringContaining("Result"));
+        });
+
+        test("子コンポーネント<IpTable/>の見出し「Simple IP Address Table」が表示されること。", () => {
+
+            act(() => {
+                root.render(<IpAddressConverter/>);
+            });
+
+            expect(container.textContent).toEqual(expect.stringContaining("Simple IP Address Table"));
         });
     });
 });

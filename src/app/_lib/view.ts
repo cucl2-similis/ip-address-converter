@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Symbol } from "./const";
+import { Char } from "./const";
 import { ResultDto } from "./result-dto";
 
 /**
@@ -41,7 +41,7 @@ export class View {
     public updateErrorMessage(errorMessage?: string): void {
         if (errorMessage == undefined) {
             this.setWasValidated(false);
-            this.setInvalidFeedback(Symbol.EMPTY);
+            this.setInvalidFeedback(Char.EMPTY);
             return;
         }
         this.setWasValidated(true);
