@@ -22,7 +22,7 @@ export function IpAddressConverter(): JSX.Element {
       </div>
       <Form setResultDto={setResultDto} />
       <Result resultDto={resultDto} />
-      <IpTable/>
+      <IpTable resultDto={resultDto} />
     </div>
   );
 }

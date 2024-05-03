@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { AddressBlock, Radio } from "../_lib/const";
+import { AddressBlock, AddressClass, Char, Radio } from "../_lib/const";
+import { ResultDto } from "../_lib/result-dto";
 import { BinSpan } from "./bin-span";
 import { RadioButton } from "./radio-button";
 
 /**
  * IPアドレス表（アコーディオン）コンポーネント  
  * IPアドレス表（アコーディオン）用`div`要素を返却する。
+ * @param props コンポーネント間の情報連携用プロパティ
+ * @param props.resultDto 変換結果DTO state変数
  * @returns IPアドレス表（アコーディオン）用`div`要素
  */
-export function IpTable(): JSX.Element {
+export function IpTable({
+  resultDto
+}: Readonly<{
+  resultDto: ResultDto | null;
+}>): JSX.Element {
 
   const [radio, setRadio] = useState<Radio>(Radio.DEC);
 
@@ -25,38 +32,38 @@ export function IpTable(): JSX.Element {
         <table className="table table-sm">
           <tbody>
             <tr>
-              <td rowSpan={3}><h6>Class A</h6></td>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.A_PUBLIC_FORMER} />
+              <AddressClassTd resultDto={resultDto} addressClass={AddressClass.A} rowSpan={3} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.A_PUBLIC_FORMER} />
             </tr>
             <tr>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.A_PRIVATE_BLOCK} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.A_PRIVATE_BLOCK} />
             </tr>
             <tr>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.A_PUBLIC_LATTER} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.A_PUBLIC_LATTER} />
             </tr>
             <tr>
-              <td className="fw-bold">localhost</td>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.LOCALHOST_BLOCK} />
+              <AddressClassTd resultDto={resultDto} addressClass={AddressClass.LOCALHOST} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.LOCALHOST_BLOCK} />
             </tr>
             <tr>
-              <td rowSpan={3}><h6>Class B</h6></td>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.B_PUBLIC_FORMER} />
+              <AddressClassTd resultDto={resultDto} addressClass={AddressClass.B} rowSpan={3} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.B_PUBLIC_FORMER} />
             </tr>
             <tr>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.B_PRIVATE_BLOCK} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.B_PRIVATE_BLOCK} />
             </tr>
             <tr>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.B_PUBLIC_LATTER} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.B_PUBLIC_LATTER} />
             </tr>
             <tr>
-              <td rowSpan={3}><h6>Class C</h6></td>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.C_PUBLIC_FORMER} />
+              <AddressClassTd resultDto={resultDto} addressClass={AddressClass.C} rowSpan={3} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.C_PUBLIC_FORMER} />
             </tr>
             <tr>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.C_PRIVATE_BLOCK} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.C_PRIVATE_BLOCK} />
             </tr>
             <tr>
-              <IpRangeTd radio={radio} addressBlock={AddressBlock.C_PUBLIC_LATTER} />
+              <AddressRangeTd radio={radio} resultDto={resultDto} addressBlock={AddressBlock.C_PUBLIC_LATTER} />
             </tr>
           </tbody>
         </table>
@@ -66,31 +73,71 @@ export function IpTable(): JSX.Element {
 }
 
 /**
- * IPアドレス範囲用表データセル要素コンポーネント  
- * IPアドレス範囲用`td`要素を返却する。
+ * アドレスクラス表データセル要素コンポーネント  
+ * アドレスクラス`td`要素を返却する。
+ * @param props コンポーネント間の情報連携用プロパティ
+ * @param props.resultDto 変換結果DTO state変数
+ * @param props.addressClass アドレスクラス
+ * @param props.rowSpan 行結合`rowspan`属性（デフォルト値：`1`）
+ * @returns アドレスクラス`td`要素
+ */
+function AddressClassTd({
+  resultDto,
+  addressClass,
+  rowSpan = 1
+}: Readonly<{
+  resultDto: ResultDto | null;
+  addressClass: AddressClass;
+  rowSpan?: number;
+}>): JSX.Element {
+
+  const addressClassName = addressClass === AddressClass.LOCALHOST
+                           ? addressClass.name
+                           : "Class" + Char.SPACE + addressClass.name;
+
+  const tableInfo = resultDto != null && resultDto.getAddressClass() === addressClass
+                    ? "table-info" + Char.SPACE
+                    : Char.EMPTY;
+
+  return (
+    <td className={tableInfo + "fw-bold"} rowSpan={rowSpan}>{addressClassName}</td>
+  );
+}
+
+/**
+ * アドレス範囲表データセル要素コンポーネント  
+ * アドレス範囲`td`要素を返却する。
  * @param props コンポーネント間の情報連携用プロパティ
  * @param props.radio ラジオボタン選択肢 state変数
+ * @param props.resultDto 変換結果DTO state変数
  * @param props.addressBlock アドレスブロック
- * @returns IPアドレス範囲用`td`要素
+ * @returns アドレス範囲`td`要素
  */
-function IpRangeTd({
+function AddressRangeTd({
   radio,
+  resultDto,
   addressBlock
 }: Readonly<{
   radio: Radio;
+  resultDto: ResultDto | null;
   addressBlock: AddressBlock;
 }>): JSX.Element {
+
+  const tableInfo = resultDto != null && resultDto.getAddressBlock() === addressBlock
+                    ? "table-info" + Char.SPACE
+                    : Char.EMPTY;
+
   return (
     <>
-      <td>{addressBlock.scope}</td>
-      <td className="font-monospace">
+      <td className={tableInfo}>{addressBlock.scope}</td>
+      <td className={tableInfo + "font-monospace"}>
         {radio === Radio.DEC ? addressBlock.addressRange.decFirst
                              : <BinSpan binIpAddress={addressBlock.addressRange.binFirst}
                                         endIndexForBold={addressBlock.addressClass.index}
                                         endIndexForSecondary={addressBlock.addressClass.subnetIndex} />}
       </td>
-      <td>-</td>
-      <td className="font-monospace">
+      <td className={tableInfo}>-</td>
+      <td className={tableInfo + "font-monospace"}>
         {radio === Radio.DEC ? addressBlock.addressRange.decLast
                              : <BinSpan binIpAddress={addressBlock.addressRange.binLast}
                                         endIndexForBold={addressBlock.addressClass.index}

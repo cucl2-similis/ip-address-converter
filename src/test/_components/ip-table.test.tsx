@@ -1,5 +1,7 @@
 import { IpTable } from "@/app/_components/ip-table";
 import { Assertions } from "@/app/_lib/assertions";
+import { Builder } from "@/app/_lib/builder";
+import { AddressBlock } from "@/app/_lib/const";
 import { afterEach, beforeEach, describe, expect, test } from "@jest/globals";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { Root, createRoot } from "react-dom/client";
@@ -28,7 +30,7 @@ describe("IpTableコンポーネント", () => {
             const accordionHeaderClassName = "accordion-header";
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const accordionDivElement = container.getElementsByClassName(accordionClassName)[0];
@@ -40,7 +42,7 @@ describe("IpTableコンポーネント", () => {
         test("IPアドレス表アコーディオン用ラジオボタンが表示されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const ariaLabel = "ip-table Decimal and Binary radio toggle button group";
@@ -92,7 +94,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスAパブリック前半2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 0;
@@ -120,7 +122,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスAプライベート2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 1;
@@ -148,7 +150,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスAパブリック後半2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 2;
@@ -176,7 +178,7 @@ describe("IpTableコンポーネント", () => {
         test("ローカルホスト2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されないこと。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 3;
@@ -202,7 +204,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスBパブリック前半2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 4;
@@ -230,7 +232,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスBプライベート2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 5;
@@ -258,7 +260,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスBパブリック後半2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 6;
@@ -286,7 +288,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスCパブリック前半2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 7;
@@ -314,7 +316,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスCプライベート2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 8;
@@ -342,7 +344,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスCパブリック後半2進数IPアドレスに、太字フォント及びセカンダリテキスト表示が適用されること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 9;
@@ -373,7 +375,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスAパブリックIP前半行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 0;
@@ -407,7 +409,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスAプライベートIP行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 1;
@@ -439,7 +441,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスAパブリックIP後半行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 2;
@@ -471,7 +473,7 @@ describe("IpTableコンポーネント", () => {
         test("ローカルホスト行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 3;
@@ -503,7 +505,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスBパブリックIP前半行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 4;
@@ -537,7 +539,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスBプライベートIP行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 5;
@@ -569,7 +571,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスBパブリックIP後半行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 6;
@@ -601,7 +603,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスCパブリックIP前半行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 7;
@@ -635,7 +637,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスCプライベートIP行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 8;
@@ -667,7 +669,7 @@ describe("IpTableコンポーネント", () => {
         test("クラスCパブリックIP後半行の、初期表示およびラジオボタン切替後表示が適切であること。", () => {
 
             act(() => {
-                root.render(<IpTable/>);
+                root.render(<IpTable resultDto={null} />);
             });
 
             const tableRowNum = 9;
@@ -694,6 +696,239 @@ describe("IpTableコンポーネント", () => {
             fireEvent.click(decInputElement);
             actual = tbody.children[tableRowNum].textContent;
             expect(actual).toEqual(decExpected);
+        });
+    });
+
+    describe("テーブル行カラー切替動作確認", () => {
+
+        test("変換結果DTOがクラスAパブリックIP前半の場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.A_PUBLIC_FORMER;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 0;
+            const rangeRowNum = 0;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスAプライベートIPの場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.A_PRIVATE_BLOCK;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 0;
+            const rangeRowNum = 1;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスAパブリックIP後半の場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.A_PUBLIC_LATTER;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 0;
+            const rangeRowNum = 2;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがローカルホストの場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.LOCALHOST_BLOCK;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 3;
+            const rangeRowNum = 3;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスBパブリックIP前半の場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.B_PUBLIC_FORMER;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 4;
+            const rangeRowNum = 4;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスBプライベートIPの場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.B_PRIVATE_BLOCK;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 4;
+            const rangeRowNum = 5;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスBパブリックIP後半の場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.B_PUBLIC_LATTER;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 4;
+            const rangeRowNum = 6;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスCパブリックIP前半の場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.C_PUBLIC_FORMER;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 7;
+            const rangeRowNum = 7;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスCプライベートIPの場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.C_PRIVATE_BLOCK;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 7;
+            const rangeRowNum = 8;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
+        });
+
+        test("変換結果DTOがクラスCパブリックIP後半の場合、対応する行の背景色が切り替わること。", () => {
+
+            const addressBlock = AddressBlock.C_PUBLIC_LATTER;
+            const resultDto = Builder.ofResultDto().addressBlock(addressBlock).build();
+            act(() => {
+                root.render(<IpTable resultDto={resultDto} />);
+            });
+
+            const expected = "table-info";
+
+            const tbody = container.getElementsByTagName("tbody")[0];
+            const classRowNum = 7;
+            const rangeRowNum = 9;
+
+            const actualClassTd = tbody.children[classRowNum].children[0];
+            expect(actualClassTd.className).toEqual(expect.stringContaining(expected));
+
+            const actualRange = tbody.children[rangeRowNum];
+            for (const td of actualRange.children) {
+                expect(td.className).toEqual(expect.stringContaining(expected));
+            }
         });
     });
 });
