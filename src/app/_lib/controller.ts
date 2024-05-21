@@ -34,36 +34,40 @@ export class Controller {
     /**
      * 入力IPアドレス変換
      * @param formElement `<form>`要素
-     * @param inputElement `<input>`要素
+     * @param inputIpv4 IPv4`<input>`要素
+     * @param inputCidr CIDR`<input>`要素
      */
-    public convert(formElement: HTMLFormElement | null, inputElement: HTMLInputElement | null): void {
+    public convert(formElement: HTMLFormElement | null,
+                   inputIpv4: HTMLInputElement | null,
+                   inputCidr: HTMLInputElement | null): void {
 
         Assertions.assertNotNull(formElement);
-        Assertions.assertNotNull(inputElement);
+        Assertions.assertNotNull(inputIpv4);
+        Assertions.assertNotNull(inputCidr);
 
         // 入力チェック
-        this.validator.validate(formElement, inputElement);
+        this.validator.validate(formElement, inputIpv4);
 
         // 入力チェックエラーありの場合
         if (this.validator.hasErrors()) {
 
             // 入力値の変更イベント発生時の関数を設定
-            inputElement.oninput = () => {
-                this.validator.validate(formElement, inputElement);           // 再検証
-                this.view.updateErrorMessage(inputElement.validationMessage); // 画面表示内容更新
+            inputIpv4.oninput = () => {
+                this.validator.validate(formElement, inputIpv4);           // 再検証
+                this.view.updateErrorMessage(inputIpv4.validationMessage); // 画面表示内容更新
             };
 
             // バリデータによる検証で<input>要素に設定されたエラーメッセージで画面表示内容を更新
-            this.view.updateErrorMessage(inputElement.validationMessage);
+            this.view.updateErrorMessage(inputIpv4.validationMessage);
             return;
         }
 
         // 入力チェックエラーなしの場合
-        inputElement.oninput = () => {}; // 入力値の変更イベント発生時の関数を削除
-        this.view.updateErrorMessage();  // エラーメッセージを非表示に更新
+        inputIpv4.oninput = () => {};   // 入力値の変更イベント発生時の関数を削除
+        this.view.updateErrorMessage(); // エラーメッセージを非表示に更新
 
         // 変換
-        const resultDto = this.converter.convert(inputElement.value); // 変換処理実行
-        this.view.updateResult(resultDto);                            // 変換結果更新
+        const resultDto = this.converter.convert(inputIpv4.value, inputCidr.value); // 変換処理実行
+        this.view.updateResult(resultDto);                                          // 変換結果更新
     }
 }

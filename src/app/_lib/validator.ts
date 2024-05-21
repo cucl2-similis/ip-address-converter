@@ -20,12 +20,12 @@ export class Validator {
         this.formElement = formElement;
         VerificationStream.of(inputElement)
             .errorHandle("This field is required.", inputValue => inputValue === Char.EMPTY)
-            .errorHandle("Input value must be in format \"IP/CIDR (000.000.000.000/00)\".", Validations.isNotFormatOfIpWithCidr)
-            .errorHandle("All octets must be between 0 and 255, and CIDR must be between 0 and 32.", Validations.isIncorrectRangeOfOctetsAndCidr)
-            .errorHandle("All octets and CIDR must not start with 0.", Validations.startsWithZero)
-            .errorHandle("When Address Class is A, CIDR must be between 8 and 15.",  inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.A, inputValue))
-            .errorHandle("When Address Class is B, CIDR must be between 16 and 23.", inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.B, inputValue))
-            .errorHandle("When Address Class is C, CIDR must be between 24 and 32.", inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.C, inputValue))
+            // .errorHandle("Input value must be in format \"IP/CIDR (000.000.000.000/00)\".", Validations.isNotFormatOfIpWithCidr)
+            // .errorHandle("All octets must be between 0 and 255, and CIDR must be between 0 and 32.", Validations.isIncorrectRangeOfOctetsAndCidr)
+            // .errorHandle("All octets and CIDR must not start with 0.", Validations.startsWithZero)
+            // .errorHandle("When Address Class is A, CIDR must be between 8 and 15.",  inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.A, inputValue))
+            // .errorHandle("When Address Class is B, CIDR must be between 16 and 23.", inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.B, inputValue))
+            // .errorHandle("When Address Class is C, CIDR must be between 24 and 32.", inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.C, inputValue))
             .verify();
     }
 

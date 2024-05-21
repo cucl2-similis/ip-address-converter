@@ -19,7 +19,8 @@ export function Form({
 }>): JSX.Element {
 
   const formElementRef = useRef<HTMLFormElement>(null);
-  const inputElementRef = useRef<HTMLInputElement>(null);
+  const inputIpv4Ref = useRef<HTMLInputElement>(null);
+  const inputCidrRef = useRef<HTMLInputElement>(null);
 
   const [wasValidated, setWasValidated] = useState(false);
   const [invalidFeedback, setInvalidFeedback] = useState(Char.EMPTY);
@@ -35,17 +36,23 @@ export function Form({
         <h4>Form</h4>
         <div className="row g-3">
           <div className="col-md-3 col-lg-2">
-            <label className="col-form-label" htmlFor="ip-address">IP Address / CIDR</label>
+            <label className="col-form-label" htmlFor="ipv4">IP Address</label>
+            <span> / </span>
+            <label className="col-form-label" htmlFor="cidr">CIDR</label>
           </div>
           <div className="col-8 col-md-4 col-lg-3">
-            <input ref={inputElementRef} id="ip-address" className="form-control" type="text" placeholder="0.0.0.0/0" />
-            <div className="valid-feedback">OK</div>
-            <div className="invalid-feedback">{invalidFeedback}</div>
+            <div className="input-group has-validation">
+              <input ref={inputIpv4Ref} id="ipv4" className="form-control w-50" type="text" placeholder="0.0.0.0" />
+              <span className="input-group-text">/</span>
+              <input ref={inputCidrRef} id="cidr" className="form-control" type="text" placeholder="00" />
+              {invalidFeedback === Char.EMPTY ? <div className="valid-feedback">OK</div>
+                                              : <div className="invalid-feedback">{invalidFeedback}</div>}
+            </div>
           </div>
           <div className="col-auto">
             <button className="btn btn-primary"
                     type="submit"
-                    onClick={() => controller.convert(formElementRef.current, inputElementRef.current)}>
+                    onClick={() => controller.convert(formElementRef.current, inputIpv4Ref.current, inputCidrRef.current)}>
               Convert
             </button>
           </div>
