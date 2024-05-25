@@ -46,24 +46,27 @@ export class Controller {
         Assertions.assertNotNull(inputCidr);
 
         // 入力チェック
-        this.validator.validate(formElement, inputIpv4);
+        this.validator.validate(formElement, inputIpv4, inputCidr);
 
         // 入力チェックエラーありの場合
         if (this.validator.hasErrors()) {
 
             // 入力値の変更イベント発生時の関数を設定
-            inputIpv4.oninput = () => {
-                this.validator.validate(formElement, inputIpv4);           // 再検証
-                this.view.updateErrorMessage(inputIpv4.validationMessage); // 画面表示内容更新
+            const onInputFunction = () => {
+                this.validator.validate(formElement, inputIpv4, inputCidr);                              // 再検証
+                this.view.updateErrorMessages(inputIpv4.validationMessage, inputCidr.validationMessage); // 画面表示内容更新
             };
+            inputIpv4.oninput = onInputFunction; // IPv4アドレス<input>要素に設定
+            inputCidr.oninput = onInputFunction; // CIDRブロック<input>要素に設定
 
-            // バリデータによる検証で<input>要素に設定されたエラーメッセージで画面表示内容を更新
-            this.view.updateErrorMessage(inputIpv4.validationMessage);
+            // バリデータの検証によって<input>要素に設定されたエラーメッセージで画面表示内容を更新
+            this.view.updateErrorMessages(inputIpv4.validationMessage, inputCidr.validationMessage);
             return;
         }
 
         // 入力チェックエラーなしの場合
-        inputIpv4.oninput = () => {};   // 入力値の変更イベント発生時の関数を削除
+        inputIpv4.oninput = () => {};   // 入力値の変更イベント発生時の関数を削除（IPv4アドレス<input>要素）
+        inputCidr.oninput = () => {};   // 入力値の変更イベント発生時の関数を削除（CIDRブロック<input>要素）
         this.view.updateErrorMessage(); // エラーメッセージを非表示に更新
 
         // 変換

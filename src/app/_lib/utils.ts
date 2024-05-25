@@ -1,5 +1,5 @@
 import { Assertions } from "./assertions";
-import { AddressBlock, Char, IpAddress, Regex } from "./const";
+import { AddressBlock, AddressClass, Char, IpAddress, Regex } from "./const";
 
 /** 変換ユーティリティ */
 export class ConversionUtils {
@@ -52,6 +52,16 @@ export class ArrayUtils {
 export class IpAddressUtils {
 
     private constructor() { }
+
+    /**
+     * 10進数IPアドレス配列 から 対応するアドレスクラス を決定
+     * @param decIpAddressArray 10進数IPアドレス配列
+     * @returns アドレスクラス
+     */
+    public static determineAddressClassBy(decIpAddressArray: number[]): AddressClass {
+        const binIpAddressArray = decIpAddressArray.map(ConversionUtils.convertDecimalToBinary);
+        return IpAddressUtils.determineAddressBlockBy(binIpAddressArray).addressClass;
+    }
 
     /**
      * 2進数IPアドレス配列 から 対応するアドレスブロック を決定

@@ -49,6 +49,21 @@ export class View {
     }
 
     /**
+     * エラーメッセージ表示の更新
+     * - 引数`errorMessages`が全て空文字の場合
+     *   - 空文字でエラーメッセージ表示内容を更新する。
+     *   - {@link updateErrorMessage} を使用し、エラーメッセージ表示の更新を行う。
+     * - 引数`errorMessages`にエラーメッセージが含まれる場合
+     *   - 空文字でない最初のエラーメッセージで表示内容を更新する。
+     *   - {@link updateErrorMessage} を使用し、エラーメッセージ表示の更新を行う。
+     * @param errorMessages エラーメッセージ
+     */
+    public updateErrorMessages(...errorMessages: string[]): void {
+        const firstErrMsg = errorMessages.find(errorMessage => errorMessage !== Char.EMPTY);
+        this.updateErrorMessage(firstErrMsg == undefined ? Char.EMPTY : firstErrMsg);
+    }
+
+    /**
      * 変換結果表示の更新
      * @param resultDto 変換結果DTO
      */

@@ -1,4 +1,5 @@
 import { AddressClass, Char, IpAddress, Regex } from "./const";
+import { IpAddressUtils } from "./utils";
 
 /**
  * バリデータ（入力チェック）
@@ -14,18 +15,38 @@ export class Validator {
      * `<input>`要素の入力値を検証し、  
      * `<form>`要素にエラー有無を、`<input>`要素にエラーメッセージを設定する。
      * @param formElement `<form>`要素
-     * @param inputElement `<input>`要素
+     * @param ipv4InputElement IPv4アドレス`<input>`要素
+     * @param cidrInputElement CIDRブロック`<input>`要素
      */
-    public validate(formElement: HTMLFormElement, inputElement: HTMLInputElement): void {
+    public validate(formElement: HTMLFormElement,
+                    ipv4InputElement: HTMLInputElement,
+                    cidrInputElement: HTMLInputElement): void {
+
+        // <form>要素設定
         this.formElement = formElement;
-        VerificationStream.of(inputElement)
-            .errorHandle("This field is required.", inputValue => inputValue === Char.EMPTY)
-            // .errorHandle("Input value must be in format \"IP/CIDR (000.000.000.000/00)\".", Validations.isNotFormatOfIpWithCidr)
-            // .errorHandle("All octets must be between 0 and 255, and CIDR must be between 0 and 32.", Validations.isIncorrectRangeOfOctetsAndCidr)
-            // .errorHandle("All octets and CIDR must not start with 0.", Validations.startsWithZero)
-            // .errorHandle("When Address Class is A, CIDR must be between 8 and 15.",  inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.A, inputValue))
-            // .errorHandle("When Address Class is B, CIDR must be between 16 and 23.", inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.B, inputValue))
-            // .errorHandle("When Address Class is C, CIDR must be between 24 and 32.", inputValue => Validations.isIncorrectRangeOfCidrWhen(AddressClass.C, inputValue))
+
+        // IPv4アドレス検証
+        VerificationStream.of(ipv4InputElement)
+            .errorHandle("IP Address field is required.", ipv4 => ipv4 === Char.EMPTY)
+            .errorHandle("IP Address must be in format \"IPv4 (000.000.000.000)\".", ipv4 => ipv4.search(Regex.FORMAT_OF_IPV4_ADDRESS) === -1)
+            .errorHandle("All octets must be between 0 and 255.", ipv4 => ipv4.split(Regex.PERIOD).map(Number).some(octet => octet < 0 || 255 < octet))
+            .errorHandle("All octets must not start with 0.", ipv4 => ipv4.split(Regex.PERIOD).some(Validations.startsWithZero))
+            .verify();
+
+        // CIDRブロック未入力の場合は空のエラーメッセージを設定して検証終了
+        if (cidrInputElement.value === Char.EMPTY) {
+            cidrInputElement.setCustomValidity(Char.EMPTY);
+            return;
+        }
+
+        // CIDRブロック検証
+        VerificationStream.of(cidrInputElement)
+            .errorHandle("CIDR must be number.", cidr => cidr.search(Regex.NUMBERS_ONLY) === -1)
+            .errorHandle("CIDR must be between 0 and 32.", cidr => Number(cidr) < 0 || 32 < Number(cidr))
+            .errorHandle("CIDR must not start with 0.", Validations.startsWithZero)
+            .errorHandle("When Address Class is A, CIDR must be between 8 and 15.",  cidr => Validations.isIncorrectRangeOfCidrWhen(AddressClass.A, ipv4InputElement.value, cidr))
+            .errorHandle("When Address Class is B, CIDR must be between 16 and 23.", cidr => Validations.isIncorrectRangeOfCidrWhen(AddressClass.B, ipv4InputElement.value, cidr))
+            .errorHandle("When Address Class is C, CIDR must be between 24 and 32.", cidr => Validations.isIncorrectRangeOfCidrWhen(AddressClass.C, ipv4InputElement.value, cidr))
             .verify();
     }
 
@@ -48,178 +69,55 @@ export class Validator {
 class Validations {
 
     /**
-     * 入力値「IPアドレス/CIDRブロック」の各オクテットおよびCIDRブロックが  
-     * `0`で始まる値（`0`を除く）であることを検証する。
+     * 入力値が`0`以外の`0`で始まる値であることを検証する。
      * @param inputValue 入力値
-     * @returns 各オクテットまたはCIDRブロックが`0`で始まる値（`0`を除く）の場合は`true`
+     * @returns `0`以外の`0`で始まる値である場合は`true`
      */
     public static startsWithZero(inputValue: string): boolean {
+        return inputValue !== IpAddress.BIT_STR_ZERO          // 入力値が「0」でなく
+            && inputValue.startsWith(IpAddress.BIT_STR_ZERO); // かつ「0」始まりの場合はtrue
+    }
 
-        const [ipv4, cidr] = inputValue.split(Regex.SLASH);
+    /**
+     * 10進数IPアドレスが、指定されたアドレスクラスの場合、CIDRの範囲が正しいことを検証する。  
+     * 10進数IPアドレスが、指定されたアドレスクラスでない場合は、CIDRの値に関わらず`true`を返却する。
+     * @param addressClass アドレスクラス
+     * @param decIpAddress 10進数IPアドレス
+     * @param cidr CIDR
+     * @returns CIDRの範囲が正しい（または10進数IPアドレスが指定されたアドレスクラスでない）場合は`true`
+     */
+    public static isCorrectRangeOfCidrWhen(addressClass: AddressClass, decIpAddress: string, cidr: string): boolean {
 
-        // IPv4検証
-        for (const octet of ipv4.split(Regex.PERIOD)) {
-            // オクテットが「0」の場合は次のオクテットへ進む
-            if (octet === IpAddress.BIT_STR_ZERO) {
-                continue;
-            }
-            // オクテットが「0」始まりの場合はtrue
-            if (octet.startsWith(IpAddress.BIT_STR_ZERO)) {
-                return true;
-            }
+        // 10進数IPアドレスが指定されたアドレスクラスでない場合はtrueを返却
+        const decIpAddressArray = decIpAddress.split(Regex.PERIOD).map(Number);
+        const classOfDecAddrArg = IpAddressUtils.determineAddressClassBy(decIpAddressArray);
+        if (addressClass !== classOfDecAddrArg) {
+            return true;
         }
 
-        // CIDR検証
-        return cidr !== IpAddress.BIT_STR_ZERO          // CIDRが「0」でなく
-            && cidr.startsWith(IpAddress.BIT_STR_ZERO); // かつ「0」始まりの場合はtrue
-    }
-
-    /**
-     * 入力値が「IPアドレス/CIDRブロック」の形式に沿っていないことを検証する。
-     * - 「IPアドレス/CIDRブロック」の形式：`000.000.000.000/00`
-     *   - 第一～第四オクテットが `.` で区切られていること。
-     *   - 第一～第四オクテットが1～3桁の数字であること。
-     *   - CIDRブロックが `/` で区切られていること。
-     *   - CIDRブロックが1～2桁の数字であること。
-     * @param inputValue 入力値
-     * @returns 入力値が「IPアドレス/CIDRブロック」の形式に沿っていない場合は`true`
-     */
-    public static isNotFormatOfIpWithCidr(inputValue: string): boolean {
-        return inputValue.search(Regex.FORMAT_OF_IP_WITH_CIDR) === -1;
-    }
-
-    /**
-     * 入力値「IPアドレス/CIDRブロック」の  
-     * 各オクテットが0～255の範囲内であること、  
-     * CIDRブロックが0～32の範囲内であることを検証する。
-     * @param inputValue 入力値
-     * @returns 各オクテットおよびCIDRブロックが範囲内の場合は`true`
-     */
-    public static isCorrectRangeOfOctetsAndCidr(inputValue: string): boolean {
-
-        const [ipv4, cidr] = inputValue.split(Regex.SLASH);
-
-        return Validations.isCorrectRangeOfOctets(ipv4)
-            && Validations.isCorrectRangeOfCidr(cidr);
-    }
-
-    /**
-     * 入力値「IPアドレス/CIDRブロック」の  
-     * 各オクテットが0～255の範囲内でないこと、  
-     * CIDRブロックが0～32の範囲内でないことを検証する。
-     * @param inputValue 入力値
-     * @returns 各オクテットまたはCIDRブロックが範囲外の場合は`true`
-     */
-    public static isIncorrectRangeOfOctetsAndCidr(inputValue: string): boolean {
-        return !Validations.isCorrectRangeOfOctetsAndCidr(inputValue);
-    }
-
-    /**
-     * 入力値「IPアドレス/CIDRブロック」のうち、  
-     * IPアドレスが指定されたアドレスクラスの場合、CIDRブロックの範囲が正しいことを検証する。  
-     * IPアドレスが指定されたアドレスクラスでない場合は、CIDRブロックの値に関わらず`true`を返却する。
-     * @param addressClass アドレスクラス
-     * @param inputValue 入力値
-     * @returns CIDRブロックの範囲が正しい（またはIPアドレスが指定されたアドレスクラスでない）場合は`true`
-     */
-    public static isCorrectRangeOfCidrWhen(addressClass: AddressClass, inputValue: string): boolean {
-
-        const [firstOctet, second, third, fourth, cidr] = inputValue.split(Regex.PERIOD_OR_SLASH)
-                                                                    .map(Number);
+        // 指定されたアドレスクラスに応じた正しいCIDR範囲であることを検証
         switch (addressClass) {
             case AddressClass.A:
-                return Validations.isCorrectRangeOfCidrWhenClassA(firstOctet, cidr);
+                return 8  <= Number(cidr) && Number(cidr) <= 15;
             case AddressClass.B:
-                return Validations.isCorrectRangeOfCidrWhenClassB(firstOctet, cidr);
+                return 16 <= Number(cidr) && Number(cidr) <= 23;
             case AddressClass.C:
-                return Validations.isCorrectRangeOfCidrWhenClassC(firstOctet, cidr);
+                return 24 <= Number(cidr) && Number(cidr) <= 32;
             default:
                 return true;
         }
     }
 
     /**
-     * 入力値「IPアドレス/CIDRブロック」のうち、  
-     * IPアドレスが指定されたアドレスクラスの場合、CIDRブロックの範囲が正しくないことを検証する。  
-     * IPアドレスが指定されたアドレスクラスでない場合は、CIDRブロックの値に関わらず`false`を返却する。
+     * 10進数IPアドレスが、指定されたアドレスクラスの場合、CIDRの範囲が正しくないことを検証する。  
+     * 10進数IPアドレスが、指定されたアドレスクラスでない場合は、CIDRの値に関わらず`false`を返却する。
      * @param addressClass アドレスクラス
-     * @param inputValue 入力値
-     * @returns IPアドレスが指定されたアドレスクラスであり、かつCIDRブロックの範囲が正しくない場合は`true`
-     */
-    public static isIncorrectRangeOfCidrWhen(addressClass: AddressClass, inputValue: string): boolean {
-        return !Validations.isCorrectRangeOfCidrWhen(addressClass, inputValue);
-    }
-
-    /**
-     * 指定されたIPアドレスの各オクテットの範囲が正しい（0～255である）ことを検証する。
-     * @param ipv4 IPv4（`.`区切り）文字列
-     * @returns 各オクテットの範囲が正しい（0～255である）場合は`true`
-     */
-    private static isCorrectRangeOfOctets(ipv4: string): boolean {
-        return ipv4.split(Regex.PERIOD)                         //「.」で分割
-                   .map(Number)                                 // 数値に変換
-                   .filter(octet => 0 <= octet && octet <= 255) // 各オクテットの範囲が0～255であることを条件に絞り込み
-                   .length == 4;                                // 第一～第四すべてのオクテットが条件を満たす場合はtrue
-    }
-
-    /**
-     * 指定されたCIDRの範囲が正しい（0～32である）ことを検証する。
+     * @param decIpAddress 10進数IPアドレス
      * @param cidr CIDR
-     * @returns CIDRの範囲が正しい（0～32である）場合は`true`
+     * @returns CIDRの範囲が正しくない場合は`true`
      */
-    private static isCorrectRangeOfCidr(cidr: string): boolean {
-        return 0 <= Number(cidr) && Number(cidr) <= 32;
-    }
-
-    /**
-     * 指定された第一オクテットから判断できるIPアドレスがクラスAの場合、  
-     * CIDRがクラスAの正しい範囲（8～15）であることを検証する。  
-     * クラスAでない場合はCIDRの値に関わらず`true`を返却する。
-     * @param firstOctet 第一オクテット
-     * @param cidr CIDR
-     * @returns CIDRの範囲が正しい（またはクラスAでない）場合は`true`
-     */
-    private static isCorrectRangeOfCidrWhenClassA(firstOctet: number, cidr: number): boolean {
-        // 第一オクテットからクラスAでないと判断された場合は検証を行わずtrueを返却
-        if (firstOctet < 1 || 126 < firstOctet) {
-            return true; //（クラスAは第一オクテットが1～126）
-        }
-        // CIDRが8～15の範囲内である場合はtrue
-        return 8 <= cidr && cidr <= 15;
-    }
-
-    /**
-     * 指定された第一オクテットから判断できるIPアドレスがクラスBの場合、  
-     * CIDRがクラスBの正しい範囲（16～23）であることを検証する。  
-     * クラスBでない場合はCIDRの値に関わらず`true`を返却する。
-     * @param firstOctet 第一オクテット
-     * @param cidr CIDR
-     * @returns CIDRの範囲が正しい（またはクラスBでない）場合は`true`
-     */
-    private static isCorrectRangeOfCidrWhenClassB(firstOctet: number, cidr: number): boolean {
-        // 第一オクテットからクラスBでないと判断された場合は検証を行わずtrueを返却
-        if (firstOctet < 128 || 191 < firstOctet) {
-            return true; //（クラスBは第一オクテットが128～191）
-        }
-        // CIDRが16～23の範囲内である場合はtrue
-        return 16 <= cidr && cidr <= 23;
-    }
-
-    /**
-     * 指定された第一オクテットから判断できるIPアドレスがクラスCの場合、  
-     * CIDRがクラスCの正しい範囲（24～32）であることを検証する。  
-     * クラスCでない場合はCIDRの値に関わらず`true`を返却する。
-     * @param firstOctet 第一オクテット
-     * @param cidr CIDR
-     * @returns CIDRの範囲が正しい（またはクラスCでない）場合は`true`
-     */
-    private static isCorrectRangeOfCidrWhenClassC(firstOctet: number, cidr: number): boolean {
-        // 第一オクテットからクラスCでないと判断された場合は検証を行わずtrueを返却
-        if (firstOctet < 192 || 223 < firstOctet) {
-            return true; //（クラスCは第一オクテットが192～223）
-        }
-        // CIDRが24～32の範囲内である場合はtrue
-        return 24 <= cidr && cidr <= 32;
+    public static isIncorrectRangeOfCidrWhen(addressClass: AddressClass, decIpAddress: string, cidr: string): boolean {
+        return !Validations.isCorrectRangeOfCidrWhen(addressClass, decIpAddress, cidr);
     }
 }
 
