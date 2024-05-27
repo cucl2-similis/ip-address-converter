@@ -41,7 +41,7 @@ export class Validator {
 
         // CIDRブロック検証
         VerificationStream.of(cidrInputElement)
-            .errorHandle("CIDR must be number.", cidr => cidr.search(Regex.NUMBERS_ONLY) === -1)
+            .errorHandle("CIDR must be numeric.", cidr => cidr.search(Regex.NUMBERS_ONLY) === -1)
             .errorHandle("CIDR must be between 0 and 32.", cidr => Number(cidr) < 0 || 32 < Number(cidr))
             .errorHandle("CIDR must not start with 0.", Validations.startsWithZero)
             .errorHandle("When Address Class is A, CIDR must be between 8 and 15.",  cidr => Validations.isIncorrectRangeOfCidrWhen(AddressClass.A, ipv4InputElement.value, cidr))

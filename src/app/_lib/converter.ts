@@ -11,7 +11,7 @@ export class Converter {
     /**
      * IPアドレス変換
      * 
-     * CIDRブロック付10進数IPアドレス文字列に変換処理を適用し、  
+     * IPv4アドレス文字列とCIDRブロック文字列に変換処理を適用し、  
      * 必要情報を格納した変換結果DTOを返却する。
      * @param ipv4Str IPv4アドレス文字列
      * @param cidrStr CIDRブロック文字列
