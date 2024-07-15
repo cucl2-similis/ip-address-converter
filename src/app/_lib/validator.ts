@@ -89,23 +89,13 @@ class Validations {
     public static isCorrectRangeOfCidrWhen(addressClass: AddressClass, decIpAddress: string, cidr: string): boolean {
 
         // 10進数IPアドレスが指定されたアドレスクラスでない場合はtrueを返却
-        const decIpAddressArray = decIpAddress.split(Regex.PERIOD).map(Number);
-        const classOfDecAddrArg = IpAddressUtils.determineAddressClassBy(decIpAddressArray);
-        if (addressClass !== classOfDecAddrArg) {
+        const classOfIpAddrArg = IpAddressUtils.determineAddressClassBy(decIpAddress);
+        if (addressClass !== classOfIpAddrArg) {
             return true;
         }
 
         // 指定されたアドレスクラスに応じた正しいCIDR範囲であることを検証
-        switch (addressClass) {
-            case AddressClass.A:
-                return 8  <= Number(cidr) && Number(cidr) <= 15;
-            case AddressClass.B:
-                return 16 <= Number(cidr) && Number(cidr) <= 23;
-            case AddressClass.C:
-                return 24 <= Number(cidr) && Number(cidr) <= 32;
-            default:
-                return true;
-        }
+        return addressClass.cidr <= Number(cidr) && Number(cidr) <= addressClass.lastCidr;
     }
 
     /**

@@ -1,7 +1,7 @@
 "use client";
 
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Char } from "../_lib/const";
+import { Char, IpAddress } from "../_lib/const";
 import { Factory } from "../_lib/factory";
 import { ResultDto } from "../_lib/result-dto";
 
@@ -24,8 +24,11 @@ export function Form({
 
   const [wasValidated, setWasValidated] = useState(false);
   const [invalidFeedback, setInvalidFeedback] = useState(Char.EMPTY);
+  const [defaultCidr, setDefaultCidr] = useState(IpAddress.BIT_STR_ZERO);
 
-  const controller = Factory.createController(setWasValidated, setInvalidFeedback, setResultDto);
+  const factory = Factory.createFactory(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
+  const controller = factory.getController();
+  const view = factory.getView();
 
   return (
     <form ref={formElementRef}
@@ -42,9 +45,10 @@ export function Form({
           </div>
           <div className="col-8 col-md-4 col-lg-3">
             <div className="input-group has-validation">
-              <input ref={inputIpv4Ref} id="ipv4" className="form-control w-50" type="text" placeholder="0.0.0.0" />
+              <input onInput={() => view.updateDefaultCidrBasedOn(inputIpv4Ref.current?.value)}
+                     ref={inputIpv4Ref} id="ipv4" className="form-control w-50" type="text" placeholder="0.0.0.0" />
               <span className="input-group-text">/</span>
-              <input ref={inputCidrRef} id="cidr" className="form-control" type="text" placeholder="00" />
+              <input ref={inputCidrRef} id="cidr" className="form-control" type="text" placeholder={defaultCidr} />
               {invalidFeedback === Char.EMPTY ? <div className="valid-feedback">OK</div>
                                               : <div className="invalid-feedback">{invalidFeedback}</div>}
             </div>
@@ -52,7 +56,7 @@ export function Form({
           <div className="col-auto">
             <button className="btn btn-primary"
                     type="submit"
-                    onClick={() => controller.convert(formElementRef.current, inputIpv4Ref.current, inputCidrRef.current)}>
+                    onClick={() => controller.convert(formElementRef.current, inputIpv4Ref.current, inputCidrRef.current, defaultCidr)}>
               Convert
             </button>
           </div>

@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { Char } from "./const";
 import { ResultDto } from "./result-dto";
+import { IpAddressUtils } from "./utils";
 
 /**
  * ビュー（画面表示制御）
@@ -11,6 +12,8 @@ export class View {
     private readonly setWasValidated: Dispatch<SetStateAction<boolean>>;
     /** `invalid-feedback`クラス要素内容文字列用 stateセッタ関数 */
     private readonly setInvalidFeedback: Dispatch<SetStateAction<string>>;
+    /** CIDRブロックデフォルト値用 stateセッタ関数 */
+    private readonly setDefaultCidr: Dispatch<SetStateAction<string>>;
     /** 変換結果DTO用 stateセッタ関数 */
     private readonly setResultDto: Dispatch<SetStateAction<ResultDto | null>>;
 
@@ -18,14 +21,37 @@ export class View {
      * ビュー（画面表示制御）
      * @param setWasValidated `was-validated`クラス設定要否boolean用 stateセッタ関数
      * @param setInvalidFeedback `invalid-feedback`クラス要素内容文字列用 stateセッタ関数
+     * @param setDefaultCidr CIDRブロックデフォルト値用 stateセッタ関数
      * @param setResultDto 変換結果DTO用 stateセッタ関数
      */
     public constructor(setWasValidated: Dispatch<SetStateAction<boolean>>,
                        setInvalidFeedback: Dispatch<SetStateAction<string>>,
+                       setDefaultCidr: Dispatch<SetStateAction<string>>,
                        setResultDto: Dispatch<SetStateAction<ResultDto | null>>) {
         this.setWasValidated = setWasValidated;
         this.setInvalidFeedback = setInvalidFeedback;
+        this.setDefaultCidr = setDefaultCidr;
         this.setResultDto = setResultDto;
+    }
+
+    /**
+     * CIDRブロックデフォルト値の更新
+     * 
+     * 指定されたIPv4文字列に基づき、CIDRブロックのデフォルト値を更新する。
+     * - IPv4文字列がクラスＡの場合 → CIDRブロックのデフォルト値を「8」で更新
+     * - IPv4文字列がクラスＢの場合 → CIDRブロックのデフォルト値を「16」で更新
+     * - IPv4文字列がクラスＣの場合 → CIDRブロックのデフォルト値を「24」で更新
+     * - IPv4文字列が上記以外の場合 → CIDRブロックのデフォルト値を「0」で更新
+     * 
+     * 引数のIPv4文字列が`undefined`の場合は何もしない。
+     * @param ipv4 IPv4文字列
+     */
+    public updateDefaultCidrBasedOn(ipv4: string | undefined): void {
+        if (ipv4 == undefined) {
+            return;
+        }
+        const addressClass = IpAddressUtils.determineAddressClassBy(ipv4);
+        this.setDefaultCidr(String(addressClass.cidr));
     }
 
     /**

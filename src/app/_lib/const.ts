@@ -119,16 +119,16 @@ export type AddressRange = typeof AddressRange[keyof typeof AddressRange];
 
 /** アドレスクラス */
 export const AddressClass = {
-    /** Class A */                     // オクテット1ブロックの桁数 × 1
-    A: {name: "A", index: 1, subnetIndex: IpAddress.OCTET_DIGITS * 1},
-    /** Class B */                     // オクテット1ブロックの桁数 × 2 +「.」1つ分
-    B: {name: "B", index: 2, subnetIndex: IpAddress.OCTET_DIGITS * 2 + 1},
-    /** Class C */                     // オクテット1ブロックの桁数 × 3 +「.」2つ分
-    C: {name: "C", index: 3, subnetIndex: IpAddress.OCTET_DIGITS * 3 + 2},
+    /** Class A */                                             // オクテット1ブロックの桁数 × 1
+    A: {name: "A", cidr: 8,  lastCidr: 15, index: 1, subnetIndex: IpAddress.OCTET_DIGITS * 1},
+    /** Class B */                                             // オクテット1ブロックの桁数 × 2 +「.」1つ分
+    B: {name: "B", cidr: 16, lastCidr: 23, index: 2, subnetIndex: IpAddress.OCTET_DIGITS * 2 + 1},
+    /** Class C */                                             // オクテット1ブロックの桁数 × 3 +「.」2つ分
+    C: {name: "C", cidr: 24, lastCidr: 32, index: 3, subnetIndex: IpAddress.OCTET_DIGITS * 3 + 2},
     /** ローカルホスト */
-    LOCALHOST: {name: "localhost", index: 0, subnetIndex: 0},
+    LOCALHOST: {name: "localhost", cidr: 0, lastCidr: 0, index: 0, subnetIndex: 0},
     /** 未定義 */
-    UNDEFINED: {name: "-", index: 0, subnetIndex: 0}
+    UNDEFINED: {name: "-", cidr: 0, lastCidr: 0, index: 0, subnetIndex: 0}
 } as const;
 export type AddressClass = typeof AddressClass[keyof typeof AddressClass];
 
