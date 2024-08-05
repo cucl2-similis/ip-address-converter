@@ -49,43 +49,35 @@ describe("IpAddressUtils", () => {
 
     describe("determineAddressClassBy", () => {
 
-        test("アドレスクラスAが返却されること。", () => {
+        test("引数の10進数IPアドレスが数値配列の時、アドレスクラス未定義が返却されること。", () => {
 
-            const decIpAddressArray = [10, 0, 0, 1];
-            const actual = IpAddressUtils.determineAddressClassBy(decIpAddressArray);
-            const expected = AddressClass.A;
+            const decIpAddress = [0, 0, 0, 0];
+            const actual = IpAddressUtils.determineAddressClassBy(decIpAddress);
+            const expected = AddressClass.UNDEFINED;
             expect(actual).toEqual(expected);
         });
 
-        test("アドレスクラスBが返却されること。", () => {
+        test("引数の10進数IPアドレスが数値配列の時、対応するアドレスクラスが返却されること。", () => {
 
-            const decIpAddressArray = [172, 16, 0, 1];
-            const actual = IpAddressUtils.determineAddressClassBy(decIpAddressArray);
-            const expected = AddressClass.B;
-            expect(actual).toEqual(expected);
-        });
-
-        test("アドレスクラスCが返却されること。", () => {
-
-            const decIpAddressArray = [192, 168, 0, 1];
-            const actual = IpAddressUtils.determineAddressClassBy(decIpAddressArray);
-            const expected = AddressClass.C;
-            expect(actual).toEqual(expected);
-        });
-
-        test("ローカルホストが返却されること。", () => {
-
-            const decIpAddressArray = [127, 0, 0, 1];
-            const actual = IpAddressUtils.determineAddressClassBy(decIpAddressArray);
+            const decIpAddress = [127, 0, 0, 1];
+            const actual = IpAddressUtils.determineAddressClassBy(decIpAddress);
             const expected = AddressClass.LOCALHOST;
             expect(actual).toEqual(expected);
         });
 
-        test("アドレスクラス未定義が返却されること。", () => {
+        test("引数の10進数IPアドレスが文字列の時、アドレスクラス未定義が返却されること。", () => {
 
-            const decIpAddressArray = [0, 0, 0, 0];
-            const actual = IpAddressUtils.determineAddressClassBy(decIpAddressArray);
+            const decIpAddress = "0.0.0.0";
+            const actual = IpAddressUtils.determineAddressClassBy(decIpAddress);
             const expected = AddressClass.UNDEFINED;
+            expect(actual).toEqual(expected);
+        });
+
+        test("引数の10進数IPアドレスが文字列の時、対応するアドレスクラスが返却されること。", () => {
+
+            const decIpAddress = "127.0.0.1";
+            const actual = IpAddressUtils.determineAddressClassBy(decIpAddress);
+            const expected = AddressClass.LOCALHOST;
             expect(actual).toEqual(expected);
         });
     });

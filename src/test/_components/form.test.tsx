@@ -80,7 +80,39 @@ describe("Formコンポーネント", () => {
             });
 
             const buttonElement = screen.getByRole("button", {name: "Convert"});
-            expect(buttonElement.textContent).not.toBeUndefined();
+            expect(buttonElement.textContent).toBeDefined();
+        });
+
+        test("CIDRのプレースホルダーテキストに初期値「0」が表示されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+
+            const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
+            expect(cidrInputElement.placeholder).toEqual("0");
+        });
+
+        test("IPの入力値変更に応じて、CIDRのプレースホルダーテキスト表示が変更されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+
+            const ipv4InputElement = screen.getByLabelText<HTMLInputElement>("IP Address");
+            const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
+
+            expect(cidrInputElement.placeholder).toEqual("0");
+
+            ipv4InputElement.value = "192.168.10.1";
+            fireEvent.input(ipv4InputElement);
+            expect(cidrInputElement.placeholder).toEqual("24");
+
+            ipv4InputElement.value = "172.16.0.1";
+            fireEvent.input(ipv4InputElement);
+            expect(cidrInputElement.placeholder).toEqual("16");
         });
     });
 
@@ -99,7 +131,7 @@ describe("Formコンポーネント", () => {
             expect(setResultDto).not.toHaveBeenCalled();
         });
 
-        test("入力値に対応した変換結果DTOが、stateセッタ関数によって設定されること。", () => {
+        test("CIDR入力なしの場合、入力値に対応した変換結果DTOが、stateセッタ関数によって設定されること。", () => {
 
             const setResultDto = jest.fn();
             act(() => {
@@ -109,7 +141,10 @@ describe("Formコンポーネント", () => {
             const ipv4InputElement = screen.getByLabelText<HTMLInputElement>("IP Address");
             const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
             ipv4InputElement.value = "192.168.10.1";
-            cidrInputElement.value = "24";
+            cidrInputElement.value = "";
+
+            fireEvent.input(ipv4InputElement);
+            const expectedCidr = Number(cidrInputElement.placeholder);
 
             const buttonElement = screen.getByRole("button", {name: "Convert"});
             fireEvent.click(buttonElement);
@@ -129,9 +164,50 @@ describe("Formコンポーネント", () => {
                     .binBroadcastAddressArray(["11000000", "10101000", "00001010", "11111111"])
                     .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
                     .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "11111110"])
-                    .cidr(24)
+                    .cidr(expectedCidr)
                     .addressBlock(AddressBlock.C_PRIVATE_BLOCK)
                     .numberOfAvailableIps(254)
+                    .build();
+
+            expect(setResultDto).toHaveBeenCalledWith(resultDto);
+        });
+
+        test("CIDR入力ありの場合、入力値に対応した変換結果DTOが、stateセッタ関数によって設定されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+
+            const ipv4InputElement = screen.getByLabelText<HTMLInputElement>("IP Address");
+            const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
+            ipv4InputElement.value = "192.168.10.1";
+            cidrInputElement.value = "28";
+
+            fireEvent.input(ipv4InputElement);
+            const expectedCidr = Number(cidrInputElement.value);
+
+            const buttonElement = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(buttonElement);
+
+            expect(setResultDto).toHaveBeenCalledTimes(1);
+
+            const resultDto = Builder.ofResultDto()
+                    .decIpAddressArray([192, 168, 10, 1])
+                    .decSubnetMaskArray([255, 255, 255, 240])
+                    .decNetworkAddressArray([192, 168, 10, 0])
+                    .decBroadcastAddressArray([192, 168, 10, 15])
+                    .decFirstAvailableIpAddressArray([192, 168, 10, 1])
+                    .decLastAvailableIpAddressArray([192, 168, 10, 14])
+                    .binIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                    .binSubnetMaskArray(["11111111", "11111111", "11111111", "11110000"])
+                    .binNetworkAddressArray(["11000000", "10101000", "00001010", "00000000"])
+                    .binBroadcastAddressArray(["11000000", "10101000", "00001010", "00001111"])
+                    .binFirstAvailableIpAddressArray(["11000000", "10101000", "00001010", "00000001"])
+                    .binLastAvailableIpAddressArray(["11000000", "10101000", "00001010", "00001110"])
+                    .cidr(expectedCidr)
+                    .addressBlock(AddressBlock.C_PRIVATE_BLOCK)
+                    .numberOfAvailableIps(14)
                     .build();
 
             expect(setResultDto).toHaveBeenCalledWith(resultDto);
