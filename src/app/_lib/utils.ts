@@ -1,5 +1,5 @@
 import { Assertions } from "./assertions";
-import { AddressBlock, Char, IpAddress, Regex } from "./const";
+import { AddressBlock, AddressClass, Char, IpAddress, Regex } from "./const";
 
 /** 変換ユーティリティ */
 export class ConversionUtils {
@@ -52,6 +52,29 @@ export class ArrayUtils {
 export class IpAddressUtils {
 
     private constructor() { }
+
+    /**
+     * 10進数IPアドレス（数値配列または文字列）から 対応するアドレスクラス を決定
+     * @param decIpAddress 10進数IPアドレス（数値配列または文字列）
+     * @returns アドレスクラス
+     */
+    public static determineAddressClassBy(decIpAddress: number[] | string): AddressClass {
+
+        // 10進数IPアドレス文字列がIPv4アドレス形式でない場合はアドレスクラス未定義を返却
+        if (typeof decIpAddress === "string"
+                && decIpAddress.search(Regex.FORMAT_OF_IPV4_ADDRESS) === -1) {
+            return AddressClass.UNDEFINED;
+        }
+
+        // 引数10進数IPアドレスが文字列の場合は配列に変換
+        const decIpAddressArray = typeof decIpAddress === "string"
+                                  ? decIpAddress.split(Regex.PERIOD).map(Number)
+                                  : decIpAddress;
+
+        // 指定されたIPアドレスに対応するアドレスクラスを返却
+        const binIpAddressArray = decIpAddressArray.map(ConversionUtils.convertDecimalToBinary);
+        return IpAddressUtils.determineAddressBlockBy(binIpAddressArray).addressClass;
+    }
 
     /**
      * 2進数IPアドレス配列 から 対応するアドレスブロック を決定

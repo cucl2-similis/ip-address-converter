@@ -7,11 +7,12 @@ describe("Converter", () => {
 
     describe("convert", () => {
 
-        test("CIDRブロック付10進数IPアドレス文字列を変換結果DTOに変換できること。", () => {
+        test("IPv4アドレス文字列とCIDRブロック文字列を変換結果DTOに変換できること。", () => {
 
-            const decIpAddressWithCidr = "192.168.10.1/24";
+            const ipv4Str = "192.168.10.1";
+            const cidrStr = "24";
             const converter = new Converter();
-            const actual = converter.convert(decIpAddressWithCidr);
+            const actual = converter.convert(ipv4Str, cidrStr);
 
             const expected = Builder.ofResultDto()
                     .decIpAddressArray([192, 168, 10, 1])
