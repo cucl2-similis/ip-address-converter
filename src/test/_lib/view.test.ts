@@ -1,3 +1,4 @@
+import { Builder } from "@/app/_lib/builder";
 import { View } from "@/app/_lib/view";
 import { describe, expect, jest, test } from "@jest/globals";
 
@@ -150,6 +151,41 @@ describe("View", () => {
 
             expect(setInvalidFeedback).toHaveBeenCalledTimes(1);
             expect(setInvalidFeedback).toHaveBeenCalledWith("");
+        });
+    });
+
+    describe("updateResult", () => {
+
+        test("引数が変換結果DTOの場合、stateセッタ関数により変換結果表示の更新が行われること。", () => {
+
+            const setWasValidated = jest.fn();
+            const setInvalidFeedback = jest.fn();
+            const setDefaultCidr = jest.fn();
+            const setResultDto = jest.fn();
+            const view = new View(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
+
+            const resultDto = Builder.ofResultDto().build();
+
+            view.updateResult(resultDto);
+
+            expect(setResultDto).toHaveBeenCalledTimes(1);
+            expect(setResultDto).toHaveBeenCalledWith(resultDto);
+        });
+
+        test("引数がnullの場合、stateセッタ関数により変換結果表示の初期化が行われること。", () => {
+
+            const setWasValidated = jest.fn();
+            const setInvalidFeedback = jest.fn();
+            const setDefaultCidr = jest.fn();
+            const setResultDto = jest.fn();
+            const view = new View(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
+
+            const resultDto = null;
+
+            view.updateResult(resultDto);
+
+            expect(setResultDto).toHaveBeenCalledTimes(1);
+            expect(setResultDto).toHaveBeenCalledWith(resultDto);
         });
     });
 });
