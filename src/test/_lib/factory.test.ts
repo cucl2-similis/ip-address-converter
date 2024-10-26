@@ -7,23 +7,47 @@ import { describe, expect, jest, test } from "@jest/globals";
 
 describe("Factory", () => {
 
-    describe("createController", () => {
+    const setWasValidated = jest.fn();
+    const setInvalidFeedback = jest.fn();
+    const setDefaultCidr = jest.fn();
+    const setResultDto = jest.fn();
 
-        test("Controllerインスタンスを生成できること。", () => {
+    describe("createFactory", () => {
 
-            const setWasValidated = jest.fn();
-            const setInvalidFeedback = jest.fn();
-            const setResultDto = jest.fn();
+        test("Factoryインスタンスを生成できること。", () => {
+
+            const factory = Factory.createFactory(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
+
+            expect(factory).toBeInstanceOf(Factory);
+        });
+    });
+
+    describe("getController", () => {
+
+        test("Controllerインスタンスを取得できること。", () => {
 
             const converter = new Converter();
             const validator = new Validator();
-            const view = new View(setWasValidated, setInvalidFeedback, setResultDto);
-
+            const view = new View(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
             const expectedController = new Controller(converter, validator, view);
 
-            const actualController = Factory.createController(setWasValidated, setInvalidFeedback, setResultDto);
+            const factory = Factory.createFactory(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
+            const actualController = factory.getController();
 
             expect(actualController).toEqual(expectedController);
+        });
+    });
+
+    describe("getView", () => {
+
+        test("Viewインスタンスを取得できること。", () => {
+
+            const expectedView = new View(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
+
+            const factory = Factory.createFactory(setWasValidated, setInvalidFeedback, setDefaultCidr, setResultDto);
+            const actualView = factory.getView();
+
+            expect(actualView).toEqual(expectedView);
         });
     });
 });

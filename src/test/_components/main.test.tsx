@@ -71,5 +71,14 @@ describe("IpAddressConverterコンポーネント", () => {
 
             expect(container.textContent).toEqual(expect.stringContaining("Simple IP Address Table"));
         });
+
+        test("子コンポーネント<Footer/>のリンク「Repository」が表示されること。", () => {
+
+            act(() => {
+                root.render(<IpAddressConverter/>);
+            });
+
+            expect(container.textContent).toEqual(expect.stringContaining("Repository"));
+        });
     });
 });

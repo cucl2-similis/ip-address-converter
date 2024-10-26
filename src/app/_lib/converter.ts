@@ -11,17 +11,16 @@ export class Converter {
     /**
      * IPアドレス変換
      * 
-     * CIDRブロック付10進数IPアドレス文字列に変換処理を適用し、  
+     * IPv4アドレス文字列とCIDRブロック文字列に変換処理を適用し、  
      * 必要情報を格納した変換結果DTOを返却する。
-     * @param decIpAddressWithCidr CIDRブロック付10進数IPアドレス文字列
+     * @param ipv4Str IPv4アドレス文字列
+     * @param cidrStr CIDRブロック文字列
      * @returns 変換結果DTO
      */
-    public convert(decIpAddressWithCidr: string): ResultDto {
+    public convert(ipv4Str: string, cidrStr: string): ResultDto {
 
-        const decIpAddressArray = decIpAddressWithCidr            // IP:     1.2.3.4/5
-                                    .split(Regex.PERIOD_OR_SLASH) // array = 1,2,3,4,5 ──┐
-                                    .map(Number);                 // array = 1,2,3,4  <──┤ pop
-        const cidr = Number(decIpAddressArray.pop());             // cidr  = 5        <──┘
+        const decIpAddressArray = ipv4Str.split(Regex.PERIOD).map(Number);
+        const cidr = Number(cidrStr);
 
         const binIpAddressArray = decIpAddressArray.map(ConversionUtils.convertDecimalToBinary);
         const binSubnetMaskArray = IpAddressUtils.createBinSubnetMaskArray(cidr);
