@@ -83,6 +83,17 @@ describe("Formコンポーネント", () => {
             expect(buttonElement.textContent).toBeDefined();
         });
 
+        test("ボタン「Clear」が表示されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+
+            const buttonElement = screen.getByRole("button", {name: "Clear"});
+            expect(buttonElement.textContent).toBeDefined();
+        });
+
         test("CIDRのプレースホルダーテキストに初期値「0」が表示されること。", () => {
 
             const setResultDto = jest.fn();
@@ -211,6 +222,88 @@ describe("Formコンポーネント", () => {
                     .build();
 
             expect(setResultDto).toHaveBeenCalledWith(resultDto);
+        });
+    });
+
+    describe("Clearボタン動作確認", () => {
+
+        test("入力フォームの値が初期化されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+
+            const ipv4InputElement = screen.getByLabelText<HTMLInputElement>("IP Address");
+            const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
+            ipv4InputElement.value = "192.168.10.1";
+            cidrInputElement.value = "28";
+
+            fireEvent.input(ipv4InputElement);
+            fireEvent.input(cidrInputElement);
+
+            const buttonElement = screen.getByRole("button", {name: "Clear"});
+            fireEvent.click(buttonElement);
+
+            expect(ipv4InputElement.value).toEqual("");
+            expect(cidrInputElement.value).toEqual("");
+        });
+
+        test("エラーメッセージが初期化されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+            const formElement = container.children[0] as HTMLFormElement;
+
+            const ipv4InputElement = screen.getByLabelText<HTMLInputElement>("IP Address");
+            const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
+            ipv4InputElement.value = "192.000.000.000";
+            cidrInputElement.value = "16";
+
+            const convertButton = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(convertButton);
+
+            expect(ipv4InputElement.validationMessage).not.toEqual("");
+            expect(cidrInputElement.validationMessage).not.toEqual("");
+
+            const ipv4Error = ipv4InputElement.validationMessage;
+            const cidrError = cidrInputElement.validationMessage;
+
+            const anyError = new RegExp(ipv4Error + "|" + cidrError);
+            expect(formElement.textContent).toEqual(expect.stringMatching(anyError));
+
+            const clearButton = screen.getByRole("button", {name: "Clear"});
+            fireEvent.click(clearButton);
+
+            expect(formElement.textContent).toEqual(expect.not.stringContaining(ipv4Error));
+            expect(formElement.textContent).toEqual(expect.not.stringContaining(cidrError));
+        });
+
+        test("変換結果表示内容が初期化されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+
+            const ipv4InputElement = screen.getByLabelText<HTMLInputElement>("IP Address");
+            const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
+            ipv4InputElement.value = "192.168.10.1";
+            cidrInputElement.value = "28";
+
+            const convertButton = screen.getByRole("button", {name: "Convert"});
+            fireEvent.click(convertButton);
+
+            expect(setResultDto).toHaveBeenCalledTimes(1);
+            expect(setResultDto).not.toHaveBeenCalledWith(null);
+
+            const clearButton = screen.getByRole("button", {name: "Clear"});
+            fireEvent.click(clearButton);
+
+            expect(setResultDto).toHaveBeenCalledTimes(2);
+            expect(setResultDto).toHaveBeenCalledWith(null);
         });
     });
 

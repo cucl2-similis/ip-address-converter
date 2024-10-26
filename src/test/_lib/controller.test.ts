@@ -331,4 +331,108 @@ describe("Controller", () => {
             expect(setResultDto).toHaveBeenCalledWith(resultDto);
         });
     });
+
+    describe("clear", () => {
+
+        test("IPv4アドレス<input>要素がnullの場合、例外が送出され後続処理が実行されないこと。", () => {
+
+            const updateDefaultCidrBasedOn = jest.spyOn(view, "updateDefaultCidrBasedOn");
+            const updateErrorMessage = jest.spyOn(view, "updateErrorMessage");
+            const updateResult = jest.spyOn(view, "updateResult");
+
+            const ipv4InputElement = null;
+            const cidrInputElement = document.createElement("input");
+
+            expect(() => {
+                controller.clear(ipv4InputElement, cidrInputElement);
+            }).toThrow();
+
+            expect(updateDefaultCidrBasedOn).not.toHaveBeenCalled();
+            expect(updateErrorMessage).not.toHaveBeenCalled();
+            expect(updateResult).not.toHaveBeenCalled();
+        });
+
+        test("CIDRブロック<input>要素がnullの場合、例外が送出され後続処理が実行されないこと。", () => {
+
+            const updateDefaultCidrBasedOn = jest.spyOn(view, "updateDefaultCidrBasedOn");
+            const updateErrorMessage = jest.spyOn(view, "updateErrorMessage");
+            const updateResult = jest.spyOn(view, "updateResult");
+
+            const ipv4InputElement = document.createElement("input");
+            const cidrInputElement = null;
+
+            expect(() => {
+                controller.clear(ipv4InputElement, cidrInputElement);
+            }).toThrow();
+
+            expect(updateDefaultCidrBasedOn).not.toHaveBeenCalled();
+            expect(updateErrorMessage).not.toHaveBeenCalled();
+            expect(updateResult).not.toHaveBeenCalled();
+        });
+
+        test("<input>要素の入力値が初期化されること。", () => {
+
+            const ipv4InputElement = document.createElement("input");
+            const cidrInputElement = document.createElement("input");
+
+            ipv4InputElement.value = "ipv4InputElementValue";
+            cidrInputElement.value = "cidrInputElementValue";
+            controller.clear(ipv4InputElement, cidrInputElement);
+
+            expect(ipv4InputElement.value).toEqual("");
+            expect(cidrInputElement.value).toEqual("");
+        });
+
+        test("<input>要素の入力値変更イベントが初期化されること。", () => {
+
+            const updateDefaultCidrBasedOn = jest.spyOn(view, "updateDefaultCidrBasedOn");
+            const ipv4IncorrectOnInputFunc = jest.fn();
+            const cidrIncorrectOnInputFunc = jest.fn();
+
+            const ipv4InputElement = document.createElement("input");
+            const cidrInputElement = document.createElement("input");
+
+            ipv4InputElement.oninput = ipv4IncorrectOnInputFunc;
+            cidrInputElement.oninput = cidrIncorrectOnInputFunc;
+
+            controller.clear(ipv4InputElement, cidrInputElement);
+
+            expect(updateDefaultCidrBasedOn).toHaveBeenCalledTimes(1);
+            expect(updateDefaultCidrBasedOn).toHaveBeenLastCalledWith("");
+
+            const expectedIpv4Value = "ipv4InputElementValue";
+            ipv4InputElement.value = expectedIpv4Value;
+
+            fireEvent.input(ipv4InputElement);
+            expect(ipv4IncorrectOnInputFunc).not.toHaveBeenCalled();
+            expect(updateDefaultCidrBasedOn).toHaveBeenCalledTimes(2);
+            expect(updateDefaultCidrBasedOn).toHaveBeenLastCalledWith(expectedIpv4Value);
+
+            fireEvent.input(cidrInputElement);
+            expect(cidrIncorrectOnInputFunc).not.toHaveBeenCalled();
+        });
+
+        test("画面表示内容が初期化されること。", () => {
+
+            const updateDefaultCidrBasedOn = jest.spyOn(view, "updateDefaultCidrBasedOn");
+            const updateErrorMessage = jest.spyOn(view, "updateErrorMessage");
+            const updateResult = jest.spyOn(view, "updateResult");
+
+            const ipv4InputElement = document.createElement("input");
+            const cidrInputElement = document.createElement("input");
+
+            ipv4InputElement.value = "ipv4InputElementValue";
+
+            controller.clear(ipv4InputElement, cidrInputElement);
+
+            expect(updateDefaultCidrBasedOn).toHaveBeenCalledTimes(1);
+            expect(updateDefaultCidrBasedOn).toHaveBeenLastCalledWith("");
+
+            expect(updateErrorMessage).toHaveBeenCalledTimes(1);
+            expect(updateErrorMessage).toHaveBeenLastCalledWith();
+
+            expect(updateResult).toHaveBeenCalledTimes(1);
+            expect(updateResult).toHaveBeenLastCalledWith(null);
+        });
+    });
 });

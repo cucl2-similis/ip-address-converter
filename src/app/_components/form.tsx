@@ -37,13 +37,13 @@ export function Form({
           noValidate>
       <div className="my-3 p-3 border rounded">
         <h4>Form</h4>
-        <div className="row g-3">
+        <div className="row gy-2">
           <div className="col-md-3 col-lg-2">
             <label className="col-form-label" htmlFor="ipv4">IP Address</label>
             <span> / </span>
             <label className="col-form-label" htmlFor="cidr">CIDR</label>
           </div>
-          <div className="col-8 col-md-4 col-lg-3">
+          <div className="col-9 col-md-4 col-lg-3 px-md-0">
             <div className="input-group has-validation">
               <input onInput={() => view.updateDefaultCidrBasedOn(inputIpv4Ref.current?.value)}
                      ref={inputIpv4Ref} id="ipv4" className="form-control w-50" type="text" placeholder="0.0.0.0" />
@@ -53,12 +53,19 @@ export function Form({
                                               : <div className="invalid-feedback">{invalidFeedback}</div>}
             </div>
           </div>
-          <div className="col-auto">
-            <button className="btn btn-primary"
-                    type="submit"
-                    onClick={() => controller.convert(formElementRef.current, inputIpv4Ref.current, inputCidrRef.current, defaultCidr)}>
-              Convert
-            </button>
+          <div className="col-auto pt-2 pt-md-0">
+            <div className="d-flex gap-3 gap-md-2">
+              <button className="btn btn-primary"
+                      type="submit"
+                      onClick={() => controller.convert(formElementRef.current, inputIpv4Ref.current, inputCidrRef.current, defaultCidr)}>
+                Convert
+              </button>
+              <button className="btn btn-outline-primary"
+                      type="button"
+                      onClick={() => controller.clear(inputIpv4Ref.current, inputCidrRef.current)}>
+                Clear
+              </button>
+            </div>
           </div>
         </div>
       </div>

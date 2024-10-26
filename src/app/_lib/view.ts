@@ -90,10 +90,13 @@ export class View {
     }
 
     /**
-     * 変換結果表示の更新
+     * 変換結果表示の更新  
+     * 
+     * 引数に指定された変換結果DTOで変換結果表示を更新する。  
+     * 引数が`null`の場合は初期表示へ更新する。
      * @param resultDto 変換結果DTO
      */
-    public updateResult(resultDto: ResultDto): void {
+    public updateResult(resultDto: ResultDto | null): void {
         this.setResultDto(resultDto);
     }
 }

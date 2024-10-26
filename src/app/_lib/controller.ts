@@ -86,4 +86,29 @@ export class Controller {
         const resultDto = this.converter.convert(ipv4InputElement.value, cidr); // 変換処理実行
         this.view.updateResult(resultDto);                                      // 変換結果更新
     }
+
+    /**
+     * 画面表示内容初期化
+     * @param ipv4InputElement IPv4アドレス`<input>`要素
+     * @param cidrInputElement CIDRブロック`<input>`要素
+     */
+    public clear(ipv4InputElement: HTMLInputElement | null,
+                 cidrInputElement: HTMLInputElement | null): void {
+
+        Assertions.assertNotNull(ipv4InputElement);
+        Assertions.assertNotNull(cidrInputElement);
+
+        // <input>要素 入力値初期化
+        ipv4InputElement.value = Char.EMPTY;
+        cidrInputElement.value = Char.EMPTY;
+
+        // <input>要素 入力値変更イベント初期化
+        ipv4InputElement.oninput = () => this.view.updateDefaultCidrBasedOn(ipv4InputElement.value);
+        cidrInputElement.oninput = null;
+
+        // 画面表示内容更新
+        this.view.updateDefaultCidrBasedOn(ipv4InputElement.value); // CIDRデフォルト値初期化
+        this.view.updateErrorMessage();                             // エラーメッセージ初期化
+        this.view.updateResult(null);                               // 変換結果表示内容初期化
+    }
 }
