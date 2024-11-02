@@ -1,6 +1,7 @@
 import { Builder } from "@/app/_lib/builder";
 import { Controller } from "@/app/_lib/controller";
 import { Converter } from "@/app/_lib/converter";
+import { AssertionError } from "@/app/_lib/errors";
 import { Validator } from "@/app/_lib/validator";
 import { View } from "@/app/_lib/view";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
@@ -47,7 +48,11 @@ describe("Controller", () => {
 
             expect(() => {
                 controller.convert(formElement, ipv4InputElement, cidrInputElement, defaultCidr);
-            }).toThrow();
+            }).toThrow(AssertionError);
+
+            expect(() => {
+                controller.convert(formElement, ipv4InputElement, cidrInputElement, defaultCidr);
+            }).toThrow("Parameter is null.");
 
             expect(validate).not.toHaveBeenCalled();
             expect(updateErrorMessage).not.toHaveBeenCalled();
@@ -66,7 +71,11 @@ describe("Controller", () => {
 
             expect(() => {
                 controller.convert(formElement, ipv4InputElement, cidrInputElement, defaultCidr);
-            }).toThrow();
+            }).toThrow(AssertionError);
+
+            expect(() => {
+                controller.convert(formElement, ipv4InputElement, cidrInputElement, defaultCidr);
+            }).toThrow("Parameter is null.");
 
             expect(validate).not.toHaveBeenCalled();
             expect(updateErrorMessage).not.toHaveBeenCalled();
@@ -85,7 +94,11 @@ describe("Controller", () => {
 
             expect(() => {
                 controller.convert(formElement, ipv4InputElement, cidrInputElement, defaultCidr);
-            }).toThrow();
+            }).toThrow(AssertionError);
+
+            expect(() => {
+                controller.convert(formElement, ipv4InputElement, cidrInputElement, defaultCidr);
+            }).toThrow("Parameter is null.");
 
             expect(validate).not.toHaveBeenCalled();
             expect(updateErrorMessage).not.toHaveBeenCalled();
@@ -345,7 +358,11 @@ describe("Controller", () => {
 
             expect(() => {
                 controller.clear(ipv4InputElement, cidrInputElement);
-            }).toThrow();
+            }).toThrow(AssertionError);
+
+            expect(() => {
+                controller.clear(ipv4InputElement, cidrInputElement);
+            }).toThrow("Parameter is null.");
 
             expect(updateDefaultCidrBasedOn).not.toHaveBeenCalled();
             expect(updateErrorMessage).not.toHaveBeenCalled();
@@ -363,7 +380,11 @@ describe("Controller", () => {
 
             expect(() => {
                 controller.clear(ipv4InputElement, cidrInputElement);
-            }).toThrow();
+            }).toThrow(AssertionError);
+
+            expect(() => {
+                controller.clear(ipv4InputElement, cidrInputElement);
+            }).toThrow("Parameter is null.");
 
             expect(updateDefaultCidrBasedOn).not.toHaveBeenCalled();
             expect(updateErrorMessage).not.toHaveBeenCalled();
