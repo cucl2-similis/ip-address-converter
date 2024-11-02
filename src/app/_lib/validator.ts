@@ -1,4 +1,5 @@
 import { AddressClass, Char, IpAddress, Regex } from "./const";
+import { InvalidCallError } from "./errors";
 import { IpAddressUtils } from "./utils";
 
 /**
@@ -53,11 +54,11 @@ export class Validator {
     /**
      * 入力チェックエラー有無の確認
      * @returns 入力チェックエラー有の場合は`true`
-     * @throws `Error` `Validator#validate()`を実行せずに`hasErrors()`が呼び出された場合
+     * @throws :{@linkcode InvalidCallError} `Validator#validate()`を実行せずに`hasErrors()`が呼び出された場合
      */
     public hasErrors(): boolean {
         if (this.formElement == null) {
-            throw new Error("'Validator#validate()' must be called before 'hasErrors()' is executed.");
+            throw new InvalidCallError("'Validator#validate()' must be called before 'hasErrors()' is executed.");
         }
         return !this.formElement.checkValidity();
     }
