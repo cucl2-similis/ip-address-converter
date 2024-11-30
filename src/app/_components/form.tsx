@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Char, IpAddress } from "../_lib/const";
 import { Factory } from "../_lib/factory";
 import { ResultDto } from "../_lib/result-dto";
+import { EventHandlerErrorPublisher } from "./error-boundary";
 
 /**
  * フォームコンポーネント  
@@ -57,12 +58,16 @@ export function Form({
             <div className="d-flex gap-3 gap-md-2">
               <button className="btn btn-primary"
                       type="submit"
-                      onClick={() => controller.convert(formElementRef.current, inputIpv4Ref.current, inputCidrRef.current, defaultCidr)}>
+                      onClick={EventHandlerErrorPublisher.wrap(() => controller.convert(formElementRef.current,
+                                                                                        inputIpv4Ref.current,
+                                                                                        inputCidrRef.current,
+                                                                                        defaultCidr))}>
                 Convert
               </button>
               <button className="btn btn-outline-primary"
                       type="button"
-                      onClick={() => controller.clear(inputIpv4Ref.current, inputCidrRef.current)}>
+                      onClick={EventHandlerErrorPublisher.wrap(() => controller.clear(inputIpv4Ref.current,
+                                                                                      inputCidrRef.current))}>
                 Clear
               </button>
             </div>
