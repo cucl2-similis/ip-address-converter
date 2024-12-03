@@ -7,6 +7,13 @@ export default function Error({
   error: Error;
   reset: () => void;
 }>) {
+
+  if (process.env.NODE_ENV === "production") {
+    console.error = () => {};
+  } else {
+    console.error(error);
+  }
+
   return (
     <div className="container">
       <div className="px-4 py-5 my-5 text-center">

@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Char, IpAddress } from "../_lib/const";
 import { Factory } from "../_lib/factory";
 import { ResultDto } from "../_lib/result-dto";
+import { EventHandlerUtils } from "../_lib/utils";
 import { EventHandlerErrorPublisher } from "./error-boundary";
 
 /**
@@ -22,6 +23,7 @@ export function Form({
   const formElementRef = useRef<HTMLFormElement>(null);
   const inputIpv4Ref = useRef<HTMLInputElement>(null);
   const inputCidrRef = useRef<HTMLInputElement>(null);
+  const buttonConvertRef = useRef<HTMLButtonElement>(null);
 
   const [wasValidated, setWasValidated] = useState(false);
   const [invalidFeedback, setInvalidFeedback] = useState(Char.EMPTY);
@@ -34,7 +36,6 @@ export function Form({
   return (
     <form ref={formElementRef}
           className={"needs-validation" + (wasValidated ? Char.SPACE + "was-validated" : Char.EMPTY)}
-          onSubmit={formEvent => formEvent.preventDefault()}
           noValidate>
       <div className="my-3 p-3 border rounded">
         <h4>Form</h4>
@@ -47,9 +48,11 @@ export function Form({
           <div className="col-9 col-md-4 col-lg-3 px-md-0">
             <div className="input-group has-validation">
               <input onInput={() => view.updateDefaultCidrBasedOn(inputIpv4Ref.current?.value)}
+                     onKeyDown={event => EventHandlerUtils.handleClickButtonByPressingEnter(event, buttonConvertRef.current)}
                      ref={inputIpv4Ref} id="ipv4" className="form-control w-50" type="text" placeholder="0.0.0.0" />
               <span className="input-group-text">/</span>
-              <input ref={inputCidrRef} id="cidr" className="form-control" type="text" placeholder={defaultCidr} />
+              <input onKeyDown={event => EventHandlerUtils.handleClickButtonByPressingEnter(event, buttonConvertRef.current)}
+                     ref={inputCidrRef} id="cidr" className="form-control" type="text" placeholder={defaultCidr} />
               {invalidFeedback === Char.EMPTY ? <div className="valid-feedback">OK</div>
                                               : <div className="invalid-feedback">{invalidFeedback}</div>}
             </div>
@@ -57,7 +60,8 @@ export function Form({
           <div className="col-auto pt-2 pt-md-0">
             <div className="d-flex gap-3 gap-md-2">
               <button className="btn btn-primary"
-                      type="submit"
+                      type="button"
+                      ref={buttonConvertRef}
                       onClick={EventHandlerErrorPublisher.wrap(() => controller.convert(formElementRef.current,
                                                                                         inputIpv4Ref.current,
                                                                                         inputCidrRef.current,
