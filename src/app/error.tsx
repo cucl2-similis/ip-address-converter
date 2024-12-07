@@ -10,7 +10,9 @@ export default function Error({
 
   if (process.env.NODE_ENV === "production") {
     console.error = () => {};
-  } else {
+  }
+
+  if (process.env.NODE_ENV === "development") {
     console.error(error);
   }
 
