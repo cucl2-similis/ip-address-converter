@@ -5,9 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "build:local": "npm run build && npm run remove-localdocs && npm run copy-docs-to-localdocs",
+    "start": "npm run build:local && serve localdocs",
+    "remove-localdocs": "node -e \"require('fs').rmSync('./localdocs', { recursive: true, force: true })\"",
+    "copy-docs-to-localdocs": "node -e \"require('fs').cpSync('./docs', './localdocs/ip-address-converter', { recursive: true })\"",
     "lint": "next lint",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "next": "14.1.4",
@@ -23,6 +27,7 @@
     "@types/react-dom": "^18",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "serve": "^14.2.4",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5"
