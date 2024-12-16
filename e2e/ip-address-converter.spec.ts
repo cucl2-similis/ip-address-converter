@@ -2,7 +2,12 @@ import { expect, Locator, test } from "@playwright/test";
 
 test.describe("正常系", () => {
 
+    let isMobile: boolean | undefined;
+
     test.beforeEach(async ({ page }) => {
+
+        isMobile = test.info().project.use.isMobile;
+
         await page.goto("/ip-address-converter");
     });
 
@@ -74,43 +79,122 @@ test.describe("正常系", () => {
             const expectedDecIp = "---.---.---.---";
             const expectedBinIp = "--------.--------.--------.--------";
 
-            const heading = resultRow.locator("h4");
-            await expect(heading).toHaveText("Result");
+            const labelDec = result.locator("label").getByText("DEC", { exact: true });
+            const labelBin = result.locator("label").getByText("BIN", { exact: true });
+            const radioDec = result.getByRole("radio", { name: "DEC" });
+            const radioBin = result.getByRole("radio", { name: "BIN" });
 
-            await expect(ipRow.locator(boldClass)).toHaveText("IP");
-            await expect(ipRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
-            await expect(ipRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+            if (isMobile) {
 
-            await expect(classRow.locator(boldClass)).toHaveText("Class");
-            await expect(classRow).toContainText("-");
+                await expect(labelDec).toBeVisible();
+                await expect(labelBin).toBeVisible();
+                await expect(radioDec).toBeVisible();
+                await expect(radioBin).toBeVisible();
 
-            await expect(cidrRow.locator(boldClass)).toHaveText("CIDR");
-            await expect(cidrRow).toContainText("/-- ( -- IPs )");
+                await expect(radioDec).toBeChecked();
+                await expect(radioBin).not.toBeChecked();
 
-            await expect(subnetMaskRow.locator(boldClass)).toHaveText("Subnet mask");
-            await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
-            await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+                const heading = resultRow.locator("h4");
+                await expect(heading).toHaveText("Result");
 
-            await expect(networkAddressRow.locator(boldClass)).toHaveText("Network address");
-            await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
-            await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+                await expect(ipRow.locator(boldClass)).toHaveText("IP");
+                await expect(ipRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
 
-            await expect(broadcastAddressRow.locator(boldClass)).toHaveText("Broadcast address");
-            await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
-            await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+                await expect(classRow.locator(boldClass)).toHaveText("Class");
+                await expect(classRow).toContainText("-");
 
-            await expect(upperAvailableRangeRow.locator(boldClass)).toHaveText("Available range");
-            await expect(upperAvailableRangeRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
-            await expect(upperAvailableRangeRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+                await expect(cidrRow.locator(boldClass)).toHaveText("CIDR");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
 
-            const list = middleAvailableRangeRow.getByText("to", { exact: true });
-            await expect(list).toHaveCount(3);
-            await expect(list.nth(0)).toBeHidden();
-            await expect(list.nth(1)).toBeVisible();
-            await expect(list.nth(2)).toBeVisible();
+                await expect(subnetMaskRow.locator(boldClass)).toHaveText("Subnet mask");
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
 
-            await expect(lowerAvailableRangeRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
-            await expect(lowerAvailableRangeRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+                await expect(networkAddressRow.locator(boldClass)).toHaveText("Network address");
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+
+                await expect(broadcastAddressRow.locator(boldClass)).toHaveText("Broadcast address");
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+
+                await expect(upperAvailableRangeRow.locator(boldClass)).toHaveText("Available range");
+                await expect(upperAvailableRangeRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(upperAvailableRangeRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(upperAvailableRangeRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+
+                const list = middleAvailableRangeRow.getByText("to", { exact: true });
+                await expect(list).toHaveCount(3);
+                await expect(list.nth(0)).toBeVisible();
+                await expect(list.nth(1)).toBeHidden();
+                await expect(list.nth(2)).toBeHidden();
+
+                await expect(lowerAvailableRangeRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(lowerAvailableRangeRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(lowerAvailableRangeRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+
+            } else {
+
+                await expect(labelDec).toBeHidden();
+                await expect(labelBin).toBeHidden();
+                await expect(radioDec).toBeHidden();
+                await expect(radioBin).toBeHidden();
+
+                const heading = resultRow.locator("h4");
+                await expect(heading).toHaveText("Result");
+
+                await expect(ipRow.locator(boldClass)).toHaveText("IP");
+                await expect(ipRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+
+                await expect(classRow.locator(boldClass)).toHaveText("Class");
+                await expect(classRow).toContainText("-");
+
+                await expect(cidrRow.locator(boldClass)).toHaveText("CIDR");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
+
+                await expect(subnetMaskRow.locator(boldClass)).toHaveText("Subnet mask");
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+
+                await expect(networkAddressRow.locator(boldClass)).toHaveText("Network address");
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+
+                await expect(broadcastAddressRow.locator(boldClass)).toHaveText("Broadcast address");
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+
+                await expect(upperAvailableRangeRow.locator(boldClass)).toHaveText("Available range");
+                await expect(upperAvailableRangeRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(upperAvailableRangeRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(upperAvailableRangeRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+                await expect(upperAvailableRangeRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+
+                const list = middleAvailableRangeRow.getByText("to", { exact: true });
+                await expect(list).toHaveCount(3);
+                await expect(list.nth(0)).toBeHidden();
+                await expect(list.nth(1)).toBeVisible();
+                await expect(list.nth(2)).toBeVisible();
+
+                await expect(lowerAvailableRangeRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(lowerAvailableRangeRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(lowerAvailableRangeRow.locator(monoClass).nth(0)).toHaveText(expectedDecIp);
+                await expect(lowerAvailableRangeRow.locator(monoClass).nth(1)).toHaveText(expectedBinIp);
+            }
         });
 
         test("IPアドレス表が正しく表示されること。", async ({ page }) => {
@@ -299,17 +383,18 @@ test.describe("正常系", () => {
 
             const clear = page.getByRole("button", { name: "Clear" });
 
-            const resultRows = page.locator("div.border.rounded")
-                                   .filter({ hasText: "Result" })
-                                   .locator("div.row > div.row");
-            const ipRow               = resultRows.nth(1);
-            const classRow            = resultRows.nth(2);
-            const cidrRow             = resultRows.nth(3);
-            const subnetMaskRow       = resultRows.nth(4);
-            const networkAddressRow   = resultRows.nth(5);
-            const broadcastAddressRow = resultRows.nth(6);
-            const firstAvailableIpRow = resultRows.nth(7);
-            const lastAvailableIpRow  = resultRows.nth(9);
+            const result = page.locator("div.border.rounded")
+                               .filter({ hasText: "Result" });
+
+            const rows = result.locator("div.row > div.row");
+            const ipRow               = rows.nth(1);
+            const classRow            = rows.nth(2);
+            const cidrRow             = rows.nth(3);
+            const subnetMaskRow       = rows.nth(4);
+            const networkAddressRow   = rows.nth(5);
+            const broadcastAddressRow = rows.nth(6);
+            const firstAvailableIpRow = rows.nth(7);
+            const lastAvailableIpRow  = rows.nth(9);
 
             const boldClass = ".fw-bold";
             const secondary = ".text-secondary";
@@ -320,126 +405,413 @@ test.describe("正常系", () => {
             const defaultDecIp = "---.---.---.---";
             const defaultBinIp = "--------.--------.--------.--------";
 
-            // 初期表示
-            await expect(ipRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(ipRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+            const labelDec = result.locator("label").getByText("DEC", { exact: true });
+            const labelBin = result.locator("label").getByText("BIN", { exact: true });
+            const radioDec = result.getByRole("radio", { name: "DEC" });
+            const radioBin = result.getByRole("radio", { name: "BIN" });
 
-            await expect(classRow).toContainText("-");
-            await expect(cidrRow).toContainText("/-- ( -- IPs )");
+            if (isMobile) {
 
-            await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                // 初期表示
+                await expect(ipRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
 
-            await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(classRow).toContainText("-");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
 
-            await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
 
-            await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
 
-            await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
 
-            // 変換処理実行
-            await ipv4.fill("192.168.10.1");
-            await ipv4.press("Enter");
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
 
-            // 変換結果表示
-            await expect(ipRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
-            await expect(ipRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
-            await expect(ipRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
-            await expect(ipRow.locator(secondaryAndBold)).toHaveText("110");
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
 
-            await expect(classRow).toContainText("C ( Private )");
-            await expect(cidrRow).toContainText("/24 ( 254 IPs )");
+                // ラジオボタン切替
+                await labelBin.tap();
 
-            await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText("255.255.255.0");
-            await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText("11111111.11111111.11111111.00000000");
-            await expect(subnetMaskRow.locator(monoAndSecondary)).toHaveText("11111111.11111111.11111111");
+                await expect(radioDec).not.toBeChecked();
+                await expect(radioBin).toBeChecked();
 
-            await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.0");
-            await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000000");
-            await expect(networkAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+                await expect(ipRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
 
-            await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.255");
-            await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.11111111");
-            await expect(broadcastAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+                await expect(classRow).toContainText("-");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
 
-            await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
-            await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
-            await expect(firstAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
 
-            await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.254");
-            await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.11111110");
-            await expect(lastAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
 
-            // 入力チェックエラーによる変換処理失敗
-            await cidr.fill("20");
-            await cidr.press("Enter");
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
 
-            // 結果表示変更なし
-            await expect(classRow).toContainText("C ( Private )");
-            await expect(cidrRow).toContainText("/24 ( 254 IPs )");
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
 
-            // 変換処理実行
-            await cidr.fill("28");
-            await cidr.press("Enter");
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
 
-            // 変換結果表示
-            await expect(ipRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
-            await expect(ipRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
-            await expect(ipRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
-            await expect(ipRow.locator(secondaryAndBold)).toHaveText("110");
+                // 変換処理実行
+                await ipv4.fill("192.168.10.1");
+                await ipv4.press("Enter");
 
-            await expect(classRow).toContainText("C ( Private )");
-            await expect(cidrRow).toContainText("/28 ( 14 IPs )");
+                // 変換結果表示
+                await expect(ipRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(ipRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+                await expect(ipRow.locator(secondaryAndBold)).toHaveText("110");
 
-            await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText("255.255.255.240");
-            await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText("11111111.11111111.11111111.11110000");
-            await expect(subnetMaskRow.locator(monoAndSecondary)).toHaveText("11111111.11111111.11111111.1111");
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/24 ( 254 IPs )");
 
-            await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.0");
-            await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000000");
-            await expect(networkAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText("11111111.11111111.11111111.00000000");
+                await expect(subnetMaskRow.locator(monoAndSecondary)).toHaveText("11111111.11111111.11111111");
 
-            await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.15");
-            await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00001111");
-            await expect(broadcastAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000000");
+                await expect(networkAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
 
-            await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
-            await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
-            await expect(firstAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.11111111");
+                await expect(broadcastAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
 
-            await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.14");
-            await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00001110");
-            await expect(lastAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(firstAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
 
-            // クリアボタン押下
-            await clear.click();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.11111110");
+                await expect(lastAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
 
-            // 初期表示
-            await expect(ipRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(ipRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                // ラジオボタン切替
+                await labelDec.tap();
 
-            await expect(classRow).toContainText("-");
-            await expect(cidrRow).toContainText("/-- ( -- IPs )");
+                await expect(radioDec).toBeChecked();
+                await expect(radioBin).not.toBeChecked();
 
-            await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(ipRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
 
-            await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/24 ( 254 IPs )");
 
-            await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText("255.255.255.0");
 
-            await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.0");
 
-            await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
-            await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.255");
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.254");
+
+                // 入力チェックエラーによる変換処理失敗
+                await cidr.fill("20");
+                await cidr.press("Enter");
+
+                // 結果表示変更なし
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/24 ( 254 IPs )");
+
+                // 変換処理実行
+                await cidr.fill("28");
+                await cidr.press("Enter");
+
+                // 変換結果表示
+                await expect(ipRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
+
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/28 ( 14 IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText("255.255.255.240");
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.0");
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.15");
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.14");
+
+                // ラジオボタン切替
+                await labelBin.tap();
+
+                await expect(radioDec).not.toBeChecked();
+                await expect(radioBin).toBeChecked();
+
+                await expect(ipRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(ipRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+                await expect(ipRow.locator(secondaryAndBold)).toHaveText("110");
+
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/28 ( 14 IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText("11111111.11111111.11111111.11110000");
+                await expect(subnetMaskRow.locator(monoAndSecondary)).toHaveText("11111111.11111111.11111111.1111");
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000000");
+                await expect(networkAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00001111");
+                await expect(broadcastAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(firstAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00001110");
+                await expect(lastAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                // クリアボタン押下
+                await clear.tap();
+
+                // 初期表示
+                await expect(ipRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(classRow).toContainText("-");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                // ラジオボタン切替
+                await labelDec.tap();
+
+                await expect(radioDec).toBeChecked();
+                await expect(radioBin).not.toBeChecked();
+
+                await expect(ipRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(ipRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+
+                await expect(classRow).toContainText("-");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toBeVisible();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toBeHidden();
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+
+            } else {
+
+                // 初期表示
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(classRow).toContainText("-");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                // 変換処理実行
+                await ipv4.fill("192.168.10.1");
+                await ipv4.press("Enter");
+
+                // 変換結果表示
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(ipRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+                await expect(ipRow.locator(secondaryAndBold)).toHaveText("110");
+
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/24 ( 254 IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText("255.255.255.0");
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText("11111111.11111111.11111111.00000000");
+                await expect(subnetMaskRow.locator(monoAndSecondary)).toHaveText("11111111.11111111.11111111");
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.0");
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000000");
+                await expect(networkAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.255");
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.11111111");
+                await expect(broadcastAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(firstAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.254");
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.11111110");
+                await expect(lastAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010");
+
+                // 入力チェックエラーによる変換処理失敗
+                await cidr.fill("20");
+                await cidr.press("Enter");
+
+                // 結果表示変更なし
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/24 ( 254 IPs )");
+
+                // 変換処理実行
+                await cidr.fill("28");
+                await cidr.press("Enter");
+
+                // 変換結果表示
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(ipRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+                await expect(ipRow.locator(secondaryAndBold)).toHaveText("110");
+
+                await expect(classRow).toContainText("C ( Private )");
+                await expect(cidrRow).toContainText("/28 ( 14 IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText("255.255.255.240");
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText("11111111.11111111.11111111.11110000");
+                await expect(subnetMaskRow.locator(monoAndSecondary)).toHaveText("11111111.11111111.11111111.1111");
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.0");
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000000");
+                await expect(networkAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText("192.168.10.15");
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00001111");
+                await expect(broadcastAddressRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.1");
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00000001");
+                await expect(firstAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText("192.168.10.14");
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText("11000000.10101000.00001010.00001110");
+                await expect(lastAvailableIpRow.locator(monoAndSecondary)).toHaveText("11000000.10101000.00001010.0000");
+
+                // クリアボタン押下
+                await clear.click();
+
+                // 初期表示
+                await expect(ipRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(ipRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(classRow).toContainText("-");
+                await expect(cidrRow).toContainText("/-- ( -- IPs )");
+
+                await expect(subnetMaskRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(subnetMaskRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(networkAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(networkAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(broadcastAddressRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(broadcastAddressRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(firstAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(firstAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+
+                await expect(lastAvailableIpRow.locator(monoClass).nth(0)).toHaveText(defaultDecIp);
+                await expect(lastAvailableIpRow.locator(monoClass).nth(1)).toHaveText(defaultBinIp);
+            }
         });
 
         test("IPアドレス表が正しく動作すること。", async ({ page }) => {
