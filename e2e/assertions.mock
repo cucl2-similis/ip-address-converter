@@ -1,0 +1,10 @@
+// 想定外エラー発生テスト用サーバ起動用モックオブジェクト
+// ビルド前の npm scripts によるファイル置き換えに使用する
+export class Assertions {
+
+    private constructor() { }
+
+    public static assertNotNull<T>(param: T | null | undefined): asserts param is T {
+        throw new Error("Mock method 'Assertions#assertNotNull' threw Error.");
+    }
+}
