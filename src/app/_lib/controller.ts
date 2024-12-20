@@ -1,6 +1,7 @@
 import { Assertions } from "./assertions";
 import { Char } from "./const";
 import { Converter } from "./converter";
+import { AssertionError } from "./errors";
 import { Validator } from "./validator";
 import { View } from "./view";
 
@@ -38,6 +39,7 @@ export class Controller {
      * @param ipv4InputElement IPv4アドレス`<input>`要素
      * @param cidrInputElement CIDRブロック`<input>`要素
      * @param defaultCidr CIDRブロックデフォルト値 state変数
+     * @throws -{@linkcode AssertionError}：`formElement`,`ipv4InputElement`,`cidrInputElement`いずれかが`null`の場合
      */
     public convert(formElement: HTMLFormElement | null,
                    ipv4InputElement: HTMLInputElement | null,
@@ -91,6 +93,7 @@ export class Controller {
      * 画面表示内容初期化
      * @param ipv4InputElement IPv4アドレス`<input>`要素
      * @param cidrInputElement CIDRブロック`<input>`要素
+     * @throws -{@linkcode AssertionError}：`ipv4InputElement`または`cidrInputElement`が`null`の場合
      */
     public clear(ipv4InputElement: HTMLInputElement | null,
                  cidrInputElement: HTMLInputElement | null): void {

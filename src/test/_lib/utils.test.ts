@@ -1,6 +1,10 @@
+import { Assertions } from "@/app/_lib/assertions";
 import { AddressBlock, AddressClass } from "@/app/_lib/const";
-import { ArrayUtils, ConversionUtils, IpAddressUtils } from "@/app/_lib/utils";
-import { describe, expect, test } from "@jest/globals";
+import { ArrayUtils, ConversionUtils, EventHandlerUtils, IpAddressUtils } from "@/app/_lib/utils";
+import { describe, expect, jest, test } from "@jest/globals";
+import { act, fireEvent } from "@testing-library/react";
+import { createElement, KeyboardEvent } from "react";
+import { createRoot } from "react-dom/client";
 
 describe("ConversionUtils", () => {
 
@@ -298,6 +302,40 @@ describe("IpAddressUtils", () => {
             const expected = {binNetworkAddressArray, binBroadcastAddressArray};
 
             expect(actual).toEqual(expected);
+        });
+    });
+});
+
+describe("EventHandlerUtils", () => {
+
+    describe("handleClickButtonByPressingEnter", () => {
+
+        test("指定されたキーボードイベントのEnterキー押下により、ボタン要素のクリックイベントが発火されること。", () => {
+
+            const container = document.createElement("div");
+            const buttonElement = document.createElement("button");
+
+            const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+                EventHandlerUtils.handleClickButtonByPressingEnter(event, buttonElement);
+            };
+            const reactInputElement = createElement("input", {onKeyDown: handleKeyDown});
+
+            const root = createRoot(container);
+            act(() => { root.render(reactInputElement) });
+            container.appendChild(buttonElement);
+
+            const inputElement = container.querySelector("input");
+            expect(inputElement).not.toBeNull();
+            expect(inputElement).toBeInstanceOf(HTMLInputElement);
+            Assertions.assertNotNull(inputElement);
+
+            const clickButton = jest.spyOn(buttonElement, "click");
+
+            fireEvent.keyDown(inputElement, {key: "Space"});
+            expect(clickButton).not.toHaveBeenCalled();
+
+            fireEvent.keyDown(inputElement, {key: "Enter"});
+            expect(clickButton).toHaveBeenCalledTimes(1);
         });
     });
 });

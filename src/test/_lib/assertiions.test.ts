@@ -1,4 +1,5 @@
 import { Assertions } from "@/app/_lib/assertions";
+import { AssertionError } from "@/app/_lib/errors";
 import { describe, expect, test } from "@jest/globals";
 
 describe("Assertions", () => {
@@ -9,14 +10,22 @@ describe("Assertions", () => {
 
             expect(() => {
                 Assertions.assertNotNull(null);
-            }).toThrow();
+            }).toThrow(AssertionError);
+
+            expect(() => {
+                Assertions.assertNotNull(null);
+            }).toThrow("Parameter is null.");
         });
 
         test("引数がundefinedの場合、例外が送出されること。", () => {
 
             expect(() => {
                 Assertions.assertNotNull(undefined);
-            }).toThrow();
+            }).toThrow(AssertionError);
+
+            expect(() => {
+                Assertions.assertNotNull(undefined);
+            }).toThrow("Parameter is undefined.");
         });
 
         test("引数がnullまたはundefined以外の場合、例外が送出されないこと。", () => {

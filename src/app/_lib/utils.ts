@@ -1,5 +1,7 @@
+import { KeyboardEvent } from "react";
 import { Assertions } from "./assertions";
 import { AddressBlock, AddressClass, Char, IpAddress, Regex } from "./const";
+import { AssertionError } from "./errors";
 
 /** 変換ユーティリティ */
 export class ConversionUtils {
@@ -172,6 +174,7 @@ export class IpAddressUtils {
      *   - 例）`11000000101010000000101000000001` → `["11000000", "10101000", "00001010", "00000001"]`
      * @param binIpAddress 2進数IPアドレス
      * @returns オクテットごとの配列
+     * @throws -{@linkcode AssertionError}：2進数IPアドレスを8桁ごとに区切った結果が`null`の場合
      */
     private static convertBinIpAddressToOctetArray(binIpAddress: string): string[] {
 
@@ -180,9 +183,32 @@ export class IpAddressUtils {
             return binIpAddress.split(Regex.PERIOD);
         }
 
-        //「.」が含まれている場合：文字列を8桁ごとに区切った配列を返却
+        //「.」が含まれていない場合：文字列を8桁ごとに区切った配列を返却
         const octetArray = binIpAddress.match(Regex.CHUNK_OF_8_CHAR);
         Assertions.assertNotNull(octetArray);
         return octetArray;
+    }
+}
+
+/** イベントハンドラユーティリティ */
+export class EventHandlerUtils {
+
+    private constructor() { }
+
+    /**
+     * Enterキー押下によるボタンクリックイベントの発火
+     * 
+     * 指定されたキーボードイベントからEnterキー押下を検知し、  
+     * 指定されたボタン要素のクリックイベントを発火する。
+     * @param keyboardEvent インプット要素のキーボードイベント
+     * @param buttonElement ボタン要素
+     * @throws -{@linkcode AssertionError}：`buttonElement`が`null`の場合
+     */
+    public static handleClickButtonByPressingEnter(keyboardEvent: KeyboardEvent<HTMLInputElement>,
+                                                   buttonElement: HTMLButtonElement | null): void {
+        if (keyboardEvent.key === "Enter") {
+            Assertions.assertNotNull(buttonElement);
+            buttonElement.click();
+        }
     }
 }
