@@ -1,3 +1,4 @@
+import { InvalidCallError } from "@/app/_lib/errors";
 import { Validator } from "@/app/_lib/validator";
 import { beforeEach, describe, expect, test } from "@jest/globals";
 
@@ -282,7 +283,11 @@ describe("Validator", () => {
 
             expect(() => {
                 validator.hasErrors();
-            }).toThrow();
+            }).toThrow(InvalidCallError);
+
+            expect(() => {
+                validator.hasErrors();
+            }).toThrow("'Validator#validate()' must be called before 'hasErrors()' is executed.");
         });
     });
 });

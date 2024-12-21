@@ -223,6 +223,31 @@ describe("Formコンポーネント", () => {
 
             expect(setResultDto).toHaveBeenCalledWith(resultDto);
         });
+
+        test("テキストボックス上でのEnterキー押下により、Convertボタンが押下されること。", () => {
+
+            const setResultDto = jest.fn();
+            act(() => {
+                root.render(<Form setResultDto={setResultDto} />);
+            });
+
+            const ipv4InputElement = screen.getByLabelText<HTMLInputElement>("IP Address");
+            const cidrInputElement = screen.getByLabelText<HTMLInputElement>("CIDR");
+
+            const convertButtonElement = screen.getByRole("button", {name: "Convert"});
+            const clearButtonElement = screen.getByRole("button", {name: "Clear"});
+
+            const clickConvertButton = jest.spyOn(convertButtonElement, "click");
+            const clickClearButton = jest.spyOn(clearButtonElement, "click");
+
+            fireEvent.keyDown(ipv4InputElement, {key: "Enter"});
+            expect(clickConvertButton).toHaveBeenCalledTimes(1);
+            expect(clickClearButton).not.toHaveBeenCalled();
+
+            fireEvent.keyDown(cidrInputElement, {key: "Enter"});
+            expect(clickConvertButton).toHaveBeenCalledTimes(2);
+            expect(clickClearButton).not.toHaveBeenCalled();
+        });
     });
 
     describe("Clearボタン動作確認", () => {

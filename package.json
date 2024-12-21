@@ -5,9 +5,23 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "build:local": "npm run build && npm run remove-localdocs && npm run copy-docs-to-localdocs",
+    "build:error": "npm run build && npm run remove-errordocs && npm run copy-docs-to-errordocs",
+    "start": "npm run build:local && serve localdocs",
+    "start:error": "npm run mock-assertion && npm run build:error && npm run restore-backup && serve -l 3001 errordocs",
+    "remove-localdocs": "node -e \"require('fs').rmSync('./localdocs', { recursive: true, force: true })\"",
+    "remove-errordocs": "node -e \"require('fs').rmSync('./errordocs', { recursive: true, force: true })\"",
+    "copy-docs-to-localdocs": "node -e \"require('fs').cpSync('./docs', './localdocs/ip-address-converter', { recursive: true })\"",
+    "copy-docs-to-errordocs": "node -e \"require('fs').cpSync('./docs', './errordocs/ip-address-converter', { recursive: true })\"",
+    "copy-mock-to-assertion": "node -e \"require('fs').copyFileSync('./e2e/assertions.mock', './src/app/_lib/assertions.ts', constants.COPYFILE_EXCL)\"",
+    "remove-error-assertion": "node -e \"require('fs').rmSync('./src/app/_lib/assertions.ts', { force: true })\"",
+    "rename-to-bk": "node -e \"require('fs').renameSync('./src/app/_lib/assertions.ts', './src/app/_lib/assertions.ts.bk')\"",
+    "rename-to-ts": "node -e \"require('fs').renameSync('./src/app/_lib/assertions.ts.bk', './src/app/_lib/assertions.ts')\"",
+    "mock-assertion": "npm run rename-to-bk && npm run copy-mock-to-assertion",
+    "restore-backup": "npm run remove-error-assertion && npm run rename-to-ts",
     "lint": "next lint",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "next": "14.1.4",
@@ -16,12 +30,14 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@playwright/test": "^1.49.0",
     "@testing-library/react": "^14.2.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "serve": "^14.2.4",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5"
